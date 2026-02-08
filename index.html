@@ -1,0 +1,1742 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Lessie Bea CRM 🐝</title><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/><style>body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #ffd1dc, #ffffff); color: #000; margin: 0; padding: 0; } h1, h2, h3 { color: #e91e63; } .container { max-width: 1400px; margin: auto; padding: 20px; } .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; } .nav button { background: #ff69b4; border: none; color: #000; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; } .nav button.active { background: #ff1493; color: #fff; } .section { display: none; } .section.active { display: block; } .card { background: #fff0f5; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ffb6c1; } input, select, textarea, button { padding: 8px; margin: 5px 0; border-radius: 6px; border: 1px solid #ffb6c1; width: 100%; } button { background: #ff69b4; color: #000; font-weight: bold; cursor: pointer; } button.secondary { background: #ffb6c1; } button.danger { background: #e91e63; color: #fff; } table { width: 100%; border-collapse: collapse; margin-top: 10px; } th, td { border: 1px solid #ffb6c1; padding: 6px; font-size: 14px; } th { background: #ffe4e1; } .map-container { height: 400px; border-radius: 10px; overflow: hidden; } .badge { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; } .badge.new { background: #ffb6c1; } .badge.uc { background: #ffc0cb; } .badge.closed { background: #ff69b4; color: #fff; } .login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; } .login-box { background: #fff0f5; padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; border: 1px solid #ffb6c1; } .hidden { display: none; } .flex { display: flex; gap: 10px; flex-wrap: wrap; } .flex > div { flex: 1 1 200px; } .contract-box { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 10px; white-space: pre-wrap; color: #000; border: 1px solid #ffb6c1; } .contract-actions { margin-bottom: 10px; } .pipeline { display: flex; gap: 10px; overflow-x: auto; } .pipeline-column { background: #fff0f5; border-radius: 10px; padding: 10px; min-width: 220px; border: 1px solid #ffb6c1; } .pipeline-column h3 { text-align: center; } .pipeline-card { background: #ffe4e1; border-radius: 8px; padding: 8px; margin-bottom: 8px; font-size: 13px; } .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 999; } .modal-content { background: #fff0f5; padding: 20px; border-radius: 10px; max-width: 700px; width: 100%; border: 1px solid #ffb6c1; } .kpi-buttons button { margin-top: 5px; } .kpi-buttons { display:flex; gap:6px; flex-wrap:wrap; } .image-preview { max-width: 120px; max-height: 120px; border-radius: 8px; border: 1px solid #ffb6c1; display:block; margin-top:6px;} .streetview-btn { background:#ff1493; color:#fff; margin-top:5px; } .match-results { background:#fff; border:1px solid #ffb6c1; border-radius:8px; padding:10px; margin-top:10px; } #buyersByLocation { font-size: 18px; } .hot-btn { background:#ff1493; color:#fff; } .saved-search { border:1px solid #ffb6c1; padding:8px; border-radius:6px; margin-bottom:8px; background:#fff; }</style></head><body><div class="login-screen" id="loginScreen"><div class="login-box"><h2>Login</h2><input id="loginUser" placeholder="Username" type="text"/><input id="loginPass" placeholder="Password" type="password"/><button onclick="login()">Login</button><p id="loginError" style="color:#e91e63;"></p></div></div><div class="hidden" id="app"><div class="container"><h1>Lessie Bea CRM 🐝</h1><div class="nav"><button class="active" onclick="showSection('dashboard')">Dashboard</button><button onclick="showSection('buyers')">Buyers</button><button onclick="showSection('sellers')">Sellers / Deals</button><button onclick="showSection('pipeline')">Deal Pipeline</button><button onclick="showSection('portfolio')">Portfolio</button><button onclick="showSection('titleCompanies')">Title Companies</button><button onclick="showSection('map')">Buyer &amp; Seller Map</button><button onclick="showSection('calculators')">Calculators</button><button onclick="showSection('followups')">Follow-Ups</button><button onclick="showSection('templates')">SMS &amp; Email Templates</button><button onclick="showSection('marketing')">Marketing Tools</button><button onclick="showSection('contracts')">Contracts &amp; Deal Packet</button><button onclick="showSection('importExport')">Import / Export</button></div><div class="section active" id="dashboard"><div class="card"><h2>Dashboard</h2><div class="flex"><div>Total Buyers: <strong id="totalBuyers">0</strong></div><div>Total Sellers / Deals: <strong id="totalSellers">0</strong></div><div>Total Title Companies: <strong id="totalTitleCompanies">0</strong></div><div>Total Matches: <strong id="totalMatches">0</strong></div><div>Total Profit: <strong id="totalProfit">$0</strong></div><div>Driving for Dollars Leads: <strong id="totalDFD">0</strong></div></div></div><div class="card"><h2>📍 Buyers by Location</h2><pre id="buyersByLocation"></pre></div><div class="card"><h2>📊 KPI Tracker</h2><div class="flex"><div><h3>📞 Calls</h3><p>Calls Today: <strong id="callsToday">0</strong></p><p>Calls This Week: <strong id="callsWeek">0</strong></p><p>Calls This Month: <strong id="callsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('calls')">+ Log Call</button><button class="secondary" onclick="removeKPI('calls')">- Remove Call</button></div></div><div><h3>📩 Texts</h3><p>Texts Today: <strong id="textsToday">0</strong></p><p>Texts This Week: <strong id="textsWeek">0</strong></p><p>Texts This Month: <strong id="textsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('texts')">+ Log Text</button><button class="secondary" onclick="removeKPI('texts')">- Remove Text</button></div></div><div><h3>📧 Emails</h3><p>Emails Today: <strong id="emailsToday">0</strong></p><p>Emails This Week: <strong id="emailsWeek">0</strong></p><p>Emails This Month: <strong id="emailsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('emails')">+ Log Email</button><button class="secondary" onclick="removeKPI('emails')">- Remove Email</button></div></div></div><div class="flex"><div><h3>🏠 Sellers</h3><p>Sellers Today: <strong id="sellersToday">0</strong></p><p>Sellers This Week: <strong id="sellersWeek">0</strong></p><p>Sellers This Month: <strong id="sellersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('sellers')">+ Log Seller</button><button class="secondary" onclick="removeKPI('sellers')">- Remove Seller</button></div></div><div><h3>👥 Buyers</h3><p>Buyers Today: <strong id="buyersToday">0</strong></p><p>Buyers This Week: <strong id="buyersWeek">0</strong></p><p>Buyers This Month: <strong id="buyersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('buyers')">+ Log Buyer</button><button class="secondary" onclick="removeKPI('buyers')">- Remove Buyer</button></div></div><div><h3>🧑‍💼 Agents</h3><p>Agents Today: <strong id="agentsToday">0</strong></p><p>Agents This Week: <strong id="agentsWeek">0</strong></p><p>Agents This Month: <strong id="agentsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('agents')">+ Log Agent</button><button class="secondary" onclick="removeKPI('agents')">- Remove Agent</button></div></div><div><h3>📬 Direct Mail</h3><p>Mail Today: <strong id="directMailToday">0</strong></p><p>Mail This Week: <strong id="directMailWeek">0</strong></p><p>Mail This Month: <strong id="directMailMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('directMail')">+ Log Mail Sent</button><button class="secondary" onclick="removeKPI('directMail')">- Remove Mail</button></div></div></div></div></div><div class="section" id="buyers"><div class="card"><h2>Add Buyer</h2><div class="flex"><div><input id="buyerName" placeholder="Name"/></div><div><input id="buyerEmail" placeholder="Email"/></div><div><input id="buyerPhone" placeholder="Phone"/></div><div><select id="buyerContactType"><option>Regular</option><option>Active Buyer</option><option>Agent</option></select></div><div><select id="buyerType"><option>Single Family</option><option>Vacant Land</option><option>Commercial</option><option>Multi-Family</option><option>Alternative</option></select></div><div><input id="buyerCity" placeholder="City"/></div><div><input id="buyerCounty" placeholder="County"/></div><div><select id="buyerState"></select></div><div><input id="buyerMinPrice" placeholder="Min Price" type="number"/></div><div><input id="buyerMaxPrice" placeholder="Max Price" type="number"/></div><div><input id="buyerMinLot" placeholder="Min Lot (acres)" step="0.01" type="number"/></div><div><input id="buyerMaxLot" placeholder="Max Lot (acres)" step="0.01" type="number"/></div><div><input id="buyerZoning" placeholder="Zoning Preference"/></div><div><input id="buyerUtilities" placeholder="Utilities Requirement"/></div><div><input id="buyerAddress" placeholder="Street Address (optional for map)"/></div><div><input id="buyerZip" placeholder="ZIP Code (for map)"/></div><div><input id="buyerLat" placeholder="Latitude (optional)" step="0.000001" type="number"/></div><div><input id="buyerLng" placeholder="Longitude (optional)" step="0.000001" type="number"/></div><div><input id="buyerFollowUpDate" type="date"/></div><div><textarea id="buyerNotes" placeholder="Notes"></textarea></div><div><select id="hotMarketDropdown"><option value="">Select Hot Market</option></select></div><div><button class="hot-btn" onclick="addHotMarket()">Add Hot Market</button></div></div><button onclick="addBuyer()">Add Buyer</button></div><div class="card"><h2>Buyers List</h2><input id="buyerSearch" oninput="filterBuyers()" placeholder="Search buyer..."/><table id="buyersTable"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Contact Type</th><th>Type</th><th>City</th><th>County</th><th>State</th><th>Min Price</th><th>Max Price</th><th>Min Lot</th><th>Max Lot</th><th>Follow-Up</th><th>Notes</th><th>Skip Trace</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="sellers"><div class="card"><h2>Add Seller / Deal</h2><div class="flex"><div><input id="sellerName" placeholder="Seller Name"/></div><div><input id="sellerEmail" placeholder="Email"/></div><div><input id="sellerPhone" placeholder="Phone"/></div><div><select id="sellerType"><option>Single Family</option><option>Vacant Land</option><option>Commercial</option><option>Multi-Family</option></select></div><div><input id="sellerCity" placeholder="City"/></div><div><select id="sellerState"></select></div><div><input id="sellerAddress" placeholder="Street Address"/></div><div><input id="sellerZip" placeholder="ZIP Code"/></div><div><input id="sellerLat" placeholder="Latitude (optional)" step="0.000001" type="number"/></div><div><input id="sellerLng" placeholder="Longitude (optional)" step="0.000001" type="number"/></div><div><input id="sellerAPN" placeholder="APN / Parcel Number"/></div><div><input id="sellerAskingPrice" placeholder="Asking Price" type="number"/></div><div><input id="sellerLotSize" placeholder="Lot Size (acres)" step="0.01" type="number"/></div><div><input id="sellerZoning" placeholder="Zoning"/></div><div><input id="sellerUtilities" placeholder="Utilities"/></div><div><input id="sellerARV" placeholder="ARV" type="number"/></div><div><input id="sellerRepairs" placeholder="Repairs" type="number"/></div><div><input id="sellerOffer" placeholder="Your Offer" type="number"/></div><div><input id="sellerJVSplit" placeholder="JV Split %" type="number"/></div><div><input id="sellerEMD" placeholder="Earnest Money Deposit" type="number"/></div><div><input id="sellerClosingDate" placeholder="Closing Date" type="date"/></div><div><input id="sellerTitleCompany" placeholder="Title / Escrow Company"/></div><div><select id="sellerMotivation"><option value="Motivated">Motivated Seller</option><option value="Non Motivated">Non Motivated Seller</option></select></div><div><select id="sellerStatus"><option value="New">New Lead</option><option value="Contacted">Contacted</option><option value="Negotiating">Negotiating</option><option value="Under Contract">Under Contract</option><option value="Marketing">Marketing</option><option value="Closed">Closed</option><option value="Dead">Dead</option></select></div><div><select id="sellerSource"><option value="Direct">Direct</option><option value="Driving for Dollars">Driving for Dollars</option><option value="Cold Call">Cold Call</option><option value="Text">Text</option><option value="Referral">Referral</option></select></div><div><textarea id="sellerNotes" placeholder="Notes"></textarea></div><div><input id="sellerFollowUpDate" type="date"/></div><div><input id="sellerTask" placeholder="Task"/></div><div><input accept="image/*" id="sellerImage" onchange="previewSellerImage()" type="file"/><img class="image-preview" id="sellerImagePreview"/><button class="secondary" onclick="deleteSellerImage()">Delete Image</button></div></div><button onclick="addSeller()">Add Seller</button></div><div class="card"><h2>Sellers / Deals List</h2><table id="sellersTable"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>City</th><th>State</th><th>Status</th><th>Source</th><th>Asking</th><th>Offer</th><th>ARV</th><th>Repairs</th><th>JV %</th><th>APN</th><th>EMD</th><th>Closing</th><th>Title</th><th>Motivation</th><th>Task</th><th>Notes</th><th>Follow-Up</th><th>Skip Trace</th><th>Actions</th></tr></thead><tbody></tbody></table></div><div class="card"><h2>🔍 Seller Match Search</h2><div class="flex"><div><input id="matchCity" placeholder="City"/></div><div><input id="matchCounty" placeholder="County"/></div><div><select id="matchState"></select></div><div><input id="matchType" placeholder="Property Type"/></div><div><input id="matchZoning" placeholder="Zoning"/></div><div><input id="matchUtilities" placeholder="Utilities"/></div><div><input id="matchMinPrice" placeholder="Min Price" type="number"/></div><div><input id="matchMaxPrice" placeholder="Max Price" type="number"/></div><div><input id="matchMinLot" placeholder="Min Lot (acres)" step="0.01" type="number"/></div><div><input id="matchMaxLot" placeholder="Max Lot (acres)" step="0.01" type="number"/></div></div><button onclick="runSellerMatchSearch()">Search Buyers</button><div id="savedSearches"></div><div class="match-results" id="matchResults"></div></div></div><div class="section" id="pipeline"><div class="card"><h2>Deal Pipeline</h2><div class="pipeline" id="pipelineContainer"></div></div></div><div class="section" id="portfolio"><div class="card"><h2>📂 Closed Deals Portfolio</h2><table id="portfolioTable"><thead><tr><th>Seller</th><th>Address</th><th>City</th><th>State</th><th>Purchase Price</th><th>End Buyer Price</th><th>Profit</th><th>Date Closed</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="titleCompanies"><div class="card"><h2>Add Title Company</h2><div class="flex"><div><input id="titleName" placeholder="Company Name"/></div><div><input id="titleEmail" placeholder="Email"/></div><div><input id="titlePhone" placeholder="Phone"/></div><div><input id="titleCity" placeholder="City"/></div><div><select id="titleState"></select></div><div><input id="titleAddress" placeholder="Address"/></div></div><button onclick="addTitleCompany()">Add Title Company</button></div><div class="card"><h2>Title Companies List</h2><table id="titleCompaniesTable"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>State</th><th>Address</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="map"><div class="card"><h2>Buyer &amp; Seller Map (Drive for Dollars Ready)</h2><div class="map-container" id="mapContainer"></div><p style="margin-top:10px;">Buyers = Blue pins, Sellers = Red pins. Click pin for details or Street View.</p></div></div><div class="section" id="calculators"><div class="card"><h2>Offer Calculator (70% Rule + Repairs)</h2><div class="flex"><div><input id="calcARV" placeholder="ARV" type="number"/></div><div><input id="calcRepairs" placeholder="Repairs" type="number"/></div><div><input id="calcClosingCosts" placeholder="Estimated Closing Costs" type="number"/></div></div><button onclick="calculateOffer()">Calculate Offer</button><p>Your Max Allowable Offer: <strong id="calcResult">$0</strong></p></div><div class="card"><h2>Assignment Fee / JV Calculator</h2><div class="flex"><div><input id="assignContractPrice" placeholder="Contract Price" type="number"/></div><div><input id="assignEndBuyerPrice" placeholder="End Buyer Price" type="number"/></div><div><input id="assignJVPercent" placeholder="JV Split %" type="number"/></div></div><button onclick="calculateAssignment()">Calculate</button><p>Assignment Fee: <strong id="assignFee">$0</strong></p><p>Your JV Share: <strong id="assignJVShare">$0</strong></p></div><div class="card"><h2>IRS Set-Aside Calculator (Per Deal Profit)</h2><div class="flex"><div><input id="irsProfit" placeholder="Deal Profit" type="number"/></div><div><input id="irsRate" placeholder="Tax % to set aside (example: 25)" type="number"/></div></div><button onclick="calculateIRSSetAside()">Calculate IRS Set-Aside</button><p>Estimated IRS Set-Aside: <strong id="irsResult">$0</strong></p></div></div><div class="section" id="followups"><div class="card"><h2>Follow-Up Reminders &amp; Tasks</h2><table id="followupsTable"><thead><tr><th>Name</th><th>Type</th><th>Phone</th><th>Email</th><th>Follow-Up Date</th><th>Task</th><th>Notes</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="templates"><div class="card"><h2>SMS &amp; Email Templates</h2><div class="flex"><div><h3>Add Template</h3><input id="templateName" placeholder="Template Name"/><select id="templateType"><option value="sms">SMS</option><option value="email">Email</option></select><textarea id="templateBody" placeholder="Template Message"></textarea><button onclick="addTemplate()">Save Template</button></div><div><h3>Saved Templates</h3><table id="templatesTable"><thead><tr><th>Name</th><th>Type</th><th>Preview</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div></div></div><div class="section" id="marketing"><div class="card"><h2>Marketing Tools</h2><h3>📬 Postcard Generator</h3><input accept="image/*" id="postcardImage" onchange="previewMarketingImage('postcardImage','postcardPreview')" type="file"/><img class="image-preview" id="postcardPreview"/><button class="secondary" onclick="deleteMarketingImage('postcardImage','postcardPreview')">Delete Image</button><textarea id="postcardMessage" placeholder="Enter postcard message"></textarea><button onclick="generatePostcard()">Generate Postcard</button><button class="secondary" onclick="downloadMarketingDoc('postcardOutput','Postcard.html','postcardPreview')">Download Postcard</button><button class="danger" onclick="clearOutput('postcardOutput')">Delete Message</button><pre id="postcardOutput"></pre><h3>📧 Buyer Packet Email Generator</h3><input accept="image/*" id="packetImage" onchange="previewMarketingImage('packetImage','packetPreview')" type="file"/><img class="image-preview" id="packetPreview"/><button class="secondary" onclick="deleteMarketingImage('packetImage','packetPreview')">Delete Image</button><input id="packetAddress" placeholder="Property Address"/><input id="packetPrice" placeholder="Price" type="number"/><input id="packetARV" placeholder="ARV" type="number"/><textarea id="packetNotes" placeholder="Deal Notes"></textarea><button onclick="generateBuyerPacket()">Generate Buyer Packet</button><button class="secondary" onclick="downloadMarketingDoc('packetOutput','Buyer_Packet.html','packetPreview')">Download Buyer Packet</button><button class="danger" onclick="clearOutput('packetOutput')">Delete Message</button><pre id="packetOutput"></pre><h3>📄 Deal Flyer Generator</h3><input accept="image/*" id="flyerImage" onchange="previewMarketingImage('flyerImage','flyerPreview')" type="file"/><img class="image-preview" id="flyerPreview"/><button class="secondary" onclick="deleteMarketingImage('flyerImage','flyerPreview')">Delete Image</button><input id="flyerAddress" placeholder="Property Address"/><input id="flyerPrice" placeholder="Price" type="number"/><input id="flyerARV" placeholder="ARV" type="number"/><textarea id="flyerNotes" placeholder="Deal Notes"></textarea><button onclick="generateFlyer()">Generate Flyer</button><button class="secondary" onclick="downloadText('flyerOutput','Deal_Flyer.txt')">Download Flyer</button><button class="danger" onclick="clearOutput('flyerOutput')">Delete Message</button><pre id="flyerOutput"></pre><h3>🏗 Permit Lead Entry (Manual)</h3><input id="permitOwner" placeholder="Owner Name"/><input id="permitAddress" placeholder="Property Address"/><input id="permitType" placeholder="Permit Type"/><input id="permitValue" placeholder="Permit Value"/><input id="permitPulledBy" placeholder="Pulled By (Your Name)"/><input id="permitDate" type="date"/><textarea id="permitNotes" placeholder="Notes"></textarea><button onclick="addPermitLead()">Add Permit Lead</button><h3>Permit Leads List</h3><table id="permitTable"><thead><tr><th>Owner</th><th>Address</th><th>Type</th><th>Value</th><th>Pulled By</th><th>Date</th><th>Notes</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="contracts"><div class="card"><h2>Contracts &amp; Deal Packet</h2><div class="flex"><div><h3>Select Seller</h3><select id="contractSellerSelect"></select></div><div><h3>Select Buyer (Assignment)</h3><select id="contractBuyerSelect"></select></div></div><div class="contract-actions"><button onclick="openHelloSign()">Send with HelloSign</button><button onclick="downloadContract('contractVacantLand','Vacant_Land_Contract.txt')">Download Vacant Land Contract</button><button onclick="downloadContract('contractResidential','Residential_Contract.txt')">Download Residential Contract</button><button onclick="downloadContract('contractAssignment','Assignment_Contract.txt')">Download Assignment Contract</button><button onclick="downloadContract('contractClosingSheet','Closing_Sheet.txt')">Download Closing Sheet</button></div><div class="contract-box" id="contractVacantLand"></div><div class="contract-box" id="contractResidential"></div><div class="contract-box" id="contractAssignment"></div><div class="contract-box" id="contractClosingSheet"></div></div><div class="card"><h2>My Uploads (Contracts &amp; Closing Detail Sheet)</h2><input accept=".txt,.text,.md,.html" id="myDocFile" type="file"/><select id="myDocCategory"><option value="Contract">Contract</option><option value="Closing Detail Sheet">Closing Detail Sheet</option></select><button onclick="uploadMyDoc()">Upload</button><table id="myDocsTable"><thead><tr><th>Name</th><th>Category</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="importExport"><div class="card"><h2>Import Leads (CSV from PropWire, Zillow, Courthouse, etc.)</h2><input accept=".csv" id="csvFileInput" type="file"/><select id="importType"><option value="buyers">Import as Buyers</option><option value="sellers">Import as Sellers</option></select><button onclick="importCSV()">Upload CSV</button><p>CSV should include headers like: name, email, phone, type, city, state, address, zip, price, lot_size, zoning, utilities</p></div><div class="card"><h2>Export Data</h2><button onclick="exportBuyers()">Export Buyers CSV</button><button onclick="exportSellers()">Export Sellers CSV</button><button onclick="exportTitleCompanies()">Export Title Companies CSV</button></div></div></div></div><div class="modal" id="followUpModal"><div class="modal-content"><h3>Follow-Up Reminder</h3><p id="followUpMessage"></p><button onclick="closeFollowUpModal()">Close</button></div></div><div class="modal" id="docEditModal"><div class="modal-content"><h3>Edit Uploaded Document</h3><p><strong id="docEditTitle"></strong></p><textarea id="docEditBody" style="min-height:280px;"></textarea><div class="flex"><div><button onclick="saveDocEdit()">Save</button></div><div><button class="secondary" onclick="closeDocEditModal()">Cancel</button></div></div></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+// ---------------- LOGIN ----------------
+const LOGIN_USER = "Lessie";
+const LOGIN_PASS = "Lessieblinky1$@";
+
+// ---------------- SAFE STORAGE (PREVENT CRASH) ----------------
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (e) {
+    // Quota exceeded or storage blocked - prune and retry once
+    try {
+      pruneStorage();
+      localStorage.setItem(key, value);
+      return true;
+    } catch (e2) {
+      alert("Storage is full. Some old logs were cleared, but you may need to delete large items (like images) to save more.");
+      return false;
+    }
+  }
+}
+
+function pruneStorage() {
+  // Keep the app from crashing by trimming the largest / least critical logs first.
+  // (Does not change your deals/contracts text. Only trims logs/search history.)
+  try {
+    // Trim KPI arrays
+    let _kpi = JSON.parse(localStorage.getItem("kpi")) || null;
+    if (_kpi) {
+      const cap = 2000;
+      Object.keys(_kpi).forEach(k => {
+        if (Array.isArray(_kpi[k]) && _kpi[k].length > cap) _kpi[k] = _kpi[k].slice(-cap);
+      });
+      localStorage.setItem("kpi", JSON.stringify(_kpi));
+    }
+  } catch(e) {}
+
+  try {
+    // Trim saved searches
+    let _ss = JSON.parse(localStorage.getItem("savedSearches")) || [];
+    if (_ss.length > 200) {
+      _ss = _ss.slice(-200);
+      localStorage.setItem("savedSearches", JSON.stringify(_ss));
+    }
+  } catch(e) {}
+
+  try {
+    // Trim permit leads if huge
+    let _pl = JSON.parse(localStorage.getItem("permitLeads")) || [];
+    if (_pl.length > 3000) {
+      _pl = _pl.slice(-3000);
+      localStorage.setItem("permitLeads", JSON.stringify(_pl));
+    }
+  } catch(e) {}
+}
+
+function login() {
+  const user = document.getElementById("loginUser").value;
+  const pass = document.getElementById("loginPass").value;
+  if (user === LOGIN_USER && pass === LOGIN_PASS) {
+    safeSetItem("crmLoggedIn", "true");
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("app").classList.remove("hidden");
+    initApp();
+  } else {
+    document.getElementById("loginError").innerText = "Invalid username or password.";
+  }
+}
+
+if (localStorage.getItem("crmLoggedIn") === "true") {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("app").classList.remove("hidden");
+  window.onload = () => initApp();
+}
+
+// ---------------- KPI STORAGE ----------------
+let kpi = JSON.parse(localStorage.getItem("kpi")) || {
+  calls: [],
+  texts: [],
+  emails: [],
+  sellers: [],
+  buyers: [],
+  agents: [],
+  directMail: []
+};
+
+function logKPI(type) {
+  const now = new Date().toISOString();
+  if (!kpi[type]) kpi[type] = [];
+  kpi[type].push(now);
+  safeSetItem("kpi", JSON.stringify(kpi));
+  updateKPIDashboard();
+}
+
+function removeKPI(type) {
+  if (kpi[type] && kpi[type].length > 0) {
+    kpi[type].pop();
+    safeSetItem("kpi", JSON.stringify(kpi));
+    updateKPIDashboard();
+  }
+}
+
+function countByRange(arr, range) {
+  const now = new Date();
+  return (arr || []).filter(ts => {
+    const d = new Date(ts);
+    if (range === "day") return d.toDateString() === now.toDateString();
+    if (range === "week") {
+      const diff = (now - d) / (1000 * 60 * 60 * 24);
+      return diff < 7;
+    }
+    if (range === "month") {
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }
+  }).length;
+}
+
+function updateKPIDashboard() {
+  document.getElementById("callsToday").innerText = countByRange(kpi.calls, "day");
+  document.getElementById("callsWeek").innerText = countByRange(kpi.calls, "week");
+  document.getElementById("callsMonth").innerText = countByRange(kpi.calls, "month");
+
+  document.getElementById("textsToday").innerText = countByRange(kpi.texts, "day");
+  document.getElementById("textsWeek").innerText = countByRange(kpi.texts, "week");
+  document.getElementById("textsMonth").innerText = countByRange(kpi.texts, "month");
+
+  document.getElementById("emailsToday").innerText = countByRange(kpi.emails, "day");
+  document.getElementById("emailsWeek").innerText = countByRange(kpi.emails, "week");
+  document.getElementById("emailsMonth").innerText = countByRange(kpi.emails, "month");
+
+  document.getElementById("sellersToday").innerText = countByRange(kpi.sellers, "day");
+  document.getElementById("sellersWeek").innerText = countByRange(kpi.sellers, "week");
+  document.getElementById("sellersMonth").innerText = countByRange(kpi.sellers, "month");
+
+  document.getElementById("buyersToday").innerText = countByRange(kpi.buyers, "day");
+  document.getElementById("buyersWeek").innerText = countByRange(kpi.buyers, "week");
+  document.getElementById("buyersMonth").innerText = countByRange(kpi.buyers, "month");
+
+  document.getElementById("agentsToday").innerText = countByRange(kpi.agents, "day");
+  document.getElementById("agentsWeek").innerText = countByRange(kpi.agents, "week");
+  document.getElementById("agentsMonth").innerText = countByRange(kpi.agents, "month");
+
+  document.getElementById("directMailToday").innerText = countByRange(kpi.directMail, "day");
+  document.getElementById("directMailWeek").innerText = countByRange(kpi.directMail, "week");
+  document.getElementById("directMailMonth").innerText = countByRange(kpi.directMail, "month");
+}
+
+// ---------------- SECTIONS ----------------
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".nav button").forEach(btn => btn.classList.remove("active"));
+  const buttons = document.querySelectorAll(".nav button");
+  buttons.forEach(btn => {
+    if (btn.getAttribute("onclick").includes(id)) {
+      btn.classList.add("active");
+    }
+  });
+  if (id === "map") {
+    setTimeout(() => { map.invalidateSize(); refreshMapPins(); }, 300);
+  }
+  if (id === "pipeline") {
+    renderPipeline();
+  }
+  if (id === "portfolio") {
+    renderPortfolio();
+  }
+  if (id === "contracts") {
+    populateContractDropdowns();
+    renderContracts();
+    renderMyDocs();
+  }
+}
+
+// ---------------- DATA STORAGE ----------------
+let buyers = JSON.parse(localStorage.getItem("buyers")) || [];
+let sellers = JSON.parse(localStorage.getItem("sellers")) || [];
+let titleCompanies = JSON.parse(localStorage.getItem("titleCompanies")) || [];
+let templates = JSON.parse(localStorage.getItem("templates")) || [];
+let permitLeads = JSON.parse(localStorage.getItem("permitLeads")) || [];
+let portfolio = JSON.parse(localStorage.getItem("portfolio")) || [];
+let savedSearches = JSON.parse(localStorage.getItem("savedSearches")) || [];
+let hotMarkets = JSON.parse(localStorage.getItem("hotMarkets")) || [];
+let myDocs = JSON.parse(localStorage.getItem("myDocs")) || [];
+let editingDocId = null;
+
+// ---------------- STATES DROPDOWN ----------------
+const states = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
+function populateStates() {
+  const selects = ["buyerState","sellerState","titleState","matchState"];
+  selects.forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = "";
+    states.forEach(st => {
+      const opt = document.createElement("option");
+      opt.value = st;
+      opt.textContent = st;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+// ---------------- GEOCODING ----------------
+async function geocodeAddress(address) {
+  if (!address) return null;
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data && data.length > 0) {
+      return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    }
+  } catch (e) {}
+  return null;
+}
+
+// ---------------- HOT MARKETS ----------------
+function addHotMarket() {
+  const city = buyerCity.value.trim();
+  const state = buyerState.value;
+  if (!city || !state) {
+    alert("Please enter City and State to add a hot market.");
+    return;
+  }
+  const market = `${city}, ${state}`;
+  if (!hotMarkets.includes(market)) {
+    hotMarkets.push(market);
+    safeSetItem("hotMarkets", JSON.stringify(hotMarkets));
+    renderHotMarkets();
+  }
+}
+
+function renderHotMarkets() {
+  const dropdown = document.getElementById("hotMarketDropdown");
+  dropdown.innerHTML = `<option value="">Select Hot Market</option>`;
+  hotMarkets.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m;
+    const parts = m.split(",").map(x => x.trim());
+    const city = parts[0] || "";
+    const state = parts[1] || "";
+    const buyerCount = buyers.filter(b => (b.city || "").trim().toLowerCase() === city.toLowerCase() && b.state === state).length;
+    opt.textContent = `${m} (${buyerCount} buyers)`;
+    dropdown.appendChild(opt);
+  });
+}
+
+// ---------------- BUYERS ----------------
+async function addBuyer() {
+  let lat = buyerLat.value;
+  let lng = buyerLng.value;
+  if ((!lat || !lng) && (buyerAddress.value || buyerCity.value || buyerZip.value)) {
+    const addr = `${buyerAddress.value || ""}, ${buyerCity.value || ""}, ${buyerState.value || ""} ${buyerZip.value || ""}`;
+    const coords = await geocodeAddress(addr);
+    if (coords) {
+      lat = coords.lat;
+      lng = coords.lng;
+    }
+  }
+  const buyer = {
+    id: Date.now(),
+    name: buyerName.value,
+    email: buyerEmail.value,
+    phone: buyerPhone.value,
+    contactType: buyerContactType.value,
+    type: buyerType.value,
+    city: buyerCity.value,
+    county: buyerCounty.value,
+    state: buyerState.value,
+    minPrice: buyerMinPrice.value,
+    maxPrice: buyerMaxPrice.value,
+    minLot: buyerMinLot.value,
+    maxLot: buyerMaxLot.value,
+    zoning: buyerZoning.value,
+    utilities: buyerUtilities.value,
+    address: buyerAddress.value,
+    zip: buyerZip.value,
+    lat: lat || "",
+    lng: lng || "",
+    followUpDate: buyerFollowUpDate.value,
+    notes: buyerNotes.value || ""
+  };
+  buyers.push(buyer);
+  safeSetItem("buyers", JSON.stringify(buyers));
+  clearBuyerForm();
+  renderBuyers();
+  updateDashboard();
+  refreshMapPins();
+  renderHotMarkets();
+}
+
+function clearBuyerForm() {
+  document.querySelectorAll("#buyers input, #buyers textarea").forEach(i => i.value = "");
+}
+
+function renderBuyers(list = buyers) {
+  const tbody = document.querySelector("#buyersTable tbody");
+  tbody.innerHTML = "";
+  list.forEach((b, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${b.name}</td>
+      <td>${b.email}</td>
+      <td>${b.phone}</td>
+      <td>${b.contactType || ""}</td>
+      <td>${b.type}</td>
+      <td>${b.city}</td>
+      <td>${b.county || ""}</td>
+      <td>${b.state}</td>
+      <td>${b.minPrice}</td>
+      <td>${b.maxPrice}</td>
+      <td>${b.minLot}</td>
+      <td>${b.maxLot}</td>
+      <td>${b.followUpDate || ""}</td>
+      <td>${b.notes || ""}</td>
+      <td><button class="secondary" onclick="skipTrace('${b.phone}','${b.email}','${b.name}')">Skip Trace</button></td>
+      <td>
+        <button onclick="editBuyer(${index})">Edit</button>
+        <button class="danger" onclick="deleteBuyer(${index})">Delete</button>
+        <button class="secondary" onclick="sendSMS('${b.phone}')">SMS</button>
+        <button class="secondary" onclick="sendEmail('${b.email}')">Email</button>
+        <button class="secondary" onclick="callPerson('${b.phone}')">Call</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterBuyers() {
+  const term = buyerSearch.value.toLowerCase();
+  const filtered = buyers.filter(b => 
+    (b.name || "").toLowerCase().includes(term) ||
+    (b.city || "").toLowerCase().includes(term) ||
+    (b.state || "").toLowerCase().includes(term)
+  );
+  renderBuyers(filtered);
+}
+
+function editBuyer(index) {
+  const b = buyers[index];
+  buyerName.value = b.name;
+  buyerEmail.value = b.email;
+  buyerPhone.value = b.phone;
+  buyerContactType.value = b.contactType || "Regular";
+  buyerType.value = b.type;
+  buyerCity.value = b.city;
+  buyerCounty.value = b.county || "";
+  buyerState.value = b.state;
+  buyerMinPrice.value = b.minPrice;
+  buyerMaxPrice.value = b.maxPrice;
+  buyerMinLot.value = b.minLot;
+  buyerMaxLot.value = b.maxLot;
+  buyerZoning.value = b.zoning;
+  buyerUtilities.value = b.utilities;
+  buyerAddress.value = b.address;
+  buyerZip.value = b.zip;
+  buyerLat.value = b.lat;
+  buyerLng.value = b.lng;
+  buyerFollowUpDate.value = b.followUpDate || "";
+  buyerNotes.value = b.notes || "";
+  buyers.splice(index, 1);
+  safeSetItem("buyers", JSON.stringify(buyers));
+  renderBuyers();
+  updateDashboard();
+  refreshMapPins();
+  renderHotMarkets();
+}
+
+function deleteBuyer(index) {
+  if (confirm("Delete this buyer?")) {
+    buyers.splice(index, 1);
+    safeSetItem("buyers", JSON.stringify(buyers));
+    renderBuyers();
+    updateDashboard();
+    refreshMapPins();
+    renderHotMarkets();
+  }
+}
+
+// ---------------- SELLERS ----------------
+async function addSeller() {
+  let lat = sellerLat.value;
+  let lng = sellerLng.value;
+  if ((!lat || !lng) && (sellerAddress.value || sellerCity.value || sellerZip.value)) {
+    const addr = `${sellerAddress.value || ""}, ${sellerCity.value || ""}, ${sellerState.value || ""} ${sellerZip.value || ""}`;
+    const coords = await geocodeAddress(addr);
+    if (coords) {
+      lat = coords.lat;
+      lng = coords.lng;
+    }
+  }
+
+  const imageInput = document.getElementById("sellerImage");
+  let imageData = "";
+
+  if (imageInput.files.length > 0) {
+    const file = imageInput.files[0];
+    if (!file.type.startsWith("image/")) {
+      alert("Only image files are allowed.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image must be under 2MB to keep free storage.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      imageData = e.target.result;
+      saveSellerWithImage(imageData, lat, lng);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    saveSellerWithImage("", lat, lng);
+  }
+}
+
+function saveSellerWithImage(imageData, lat, lng) {
+  const seller = {
+    id: Date.now(),
+    name: sellerName.value,
+    email: sellerEmail.value,
+    phone: sellerPhone.value,
+    type: sellerType.value,
+    city: sellerCity.value,
+    state: sellerState.value,
+    address: sellerAddress.value,
+    zip: sellerZip.value,
+    lat: lat || "",
+    lng: lng || "",
+    apn: sellerAPN.value,
+    askingPrice: sellerAskingPrice.value,
+    lotSize: sellerLotSize.value,
+    zoning: sellerZoning.value,
+    utilities: sellerUtilities.value,
+    arv: sellerARV.value,
+    repairs: sellerRepairs.value,
+    offer: sellerOffer.value,
+    jvSplit: sellerJVSplit.value,
+    emd: sellerEMD.value,
+    closingDate: sellerClosingDate.value,
+    titleCompany: sellerTitleCompany.value,
+    motivation: sellerMotivation.value,
+    status: sellerStatus.value,
+    source: sellerSource.value,
+    notes: sellerNotes.value,
+    followUpDate: sellerFollowUpDate.value,
+    followUpTask: sellerTask.value,
+    image: imageData
+  };
+  sellers.push(seller);
+  safeSetItem("sellers", JSON.stringify(sellers));
+  clearSellerForm();
+  renderSellers();
+  updateDashboard();
+  refreshMapPins();
+}
+
+function clearSellerForm() {
+  document.querySelectorAll("#sellers input, #sellers textarea").forEach(i => i.value = "");
+  sellerStatus.value = "New";
+  sellerSource.value = "Direct";
+  document.getElementById("sellerImagePreview").src = "";
+  document.getElementById("sellerImage").value = "";
+}
+
+function deleteSellerImage() {
+  document.getElementById("sellerImagePreview").src = "";
+  document.getElementById("sellerImage").value = "";
+}
+
+function previewSellerImage() {
+  const input = document.getElementById("sellerImage");
+  const preview = document.getElementById("sellerImagePreview");
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    if (!file.type.startsWith("image/")) {
+      alert("Only image files are allowed.");
+      input.value = "";
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image must be under 2MB.");
+      input.value = "";
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => preview.src = e.target.result;
+    reader.readAsDataURL(file);
+  }
+}
+
+function renderSellers() {
+  const tbody = document.querySelector("#sellersTable tbody");
+  tbody.innerHTML = "";
+  sellers.forEach((s, index) => {
+    const statusBadge = s.status === "New" ? "new" : s.status === "Under Contract" ? "uc" : s.status === "Closed" ? "closed" : "";
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${s.name}</td>
+      <td>${s.email}</td>
+      <td>${s.phone}</td>
+      <td>${s.type}</td>
+      <td>${s.city}</td>
+      <td>${s.state}</td>
+      <td><span class="badge ${statusBadge}">${s.status}</span></td>
+      <td>${s.source}</td>
+      <td>${s.askingPrice}</td>
+      <td>${s.offer}</td>
+      <td>${s.arv}</td>
+      <td>${s.repairs}</td>
+      <td>${s.jvSplit}</td>
+      <td>${s.apn || ""}</td>
+      <td>${s.emd || ""}</td>
+      <td>${s.closingDate || ""}</td>
+      <td>${s.titleCompany || ""}</td>
+      <td>${s.motivation || ""}</td>
+      <td>${s.followUpTask || ""}</td>
+      <td>${s.notes}</td>
+      <td>${s.followUpDate}</td>
+      <td><button class="secondary" onclick="skipTrace('${s.phone}','${s.email}','${s.name}')">Skip Trace</button></td>
+      <td>
+        <button onclick="editSeller(${index})">Edit</button>
+        <button class="danger" onclick="deleteSeller(${index})">Delete</button>
+        <button class="secondary" onclick="sendSMS('${s.phone}')">SMS</button>
+        <button class="secondary" onclick="sendEmail('${s.email}')">Email</button>
+        <button class="secondary" onclick="callPerson('${s.phone}')">Call</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function editSeller(index) {
+  const s = sellers[index];
+  sellerName.value = s.name;
+  sellerEmail.value = s.email;
+  sellerPhone.value = s.phone;
+  sellerType.value = s.type;
+  sellerCity.value = s.city;
+  sellerState.value = s.state;
+  sellerAddress.value = s.address;
+  sellerZip.value = s.zip;
+  sellerLat.value = s.lat;
+  sellerLng.value = s.lng;
+  sellerAPN.value = s.apn || "";
+  sellerAskingPrice.value = s.askingPrice;
+  sellerLotSize.value = s.lotSize;
+  sellerZoning.value = s.zoning;
+  sellerUtilities.value = s.utilities;
+  sellerARV.value = s.arv;
+  sellerRepairs.value = s.repairs;
+  sellerOffer.value = s.offer;
+  sellerJVSplit.value = s.jvSplit;
+  sellerEMD.value = s.emd;
+  sellerClosingDate.value = s.closingDate;
+  sellerTitleCompany.value = s.titleCompany;
+  sellerMotivation.value = s.motivation;
+  sellerStatus.value = s.status;
+  sellerSource.value = s.source;
+  sellerNotes.value = s.notes;
+  sellerFollowUpDate.value = s.followUpDate;
+  sellerTask.value = s.followUpTask || "";
+  if (s.image) document.getElementById("sellerImagePreview").src = s.image;
+  sellers.splice(index, 1);
+  safeSetItem("sellers", JSON.stringify(sellers));
+  renderSellers();
+  updateDashboard();
+  refreshMapPins();
+}
+
+function deleteSeller(index) {
+  if (confirm("Delete this seller/deal?")) {
+    sellers.splice(index, 1);
+    safeSetItem("sellers", JSON.stringify(sellers));
+    renderSellers();
+    updateDashboard();
+    refreshMapPins();
+  }
+}
+
+// ---------------- SELLER MATCH SEARCH ----------------
+function runSellerMatchSearch() {
+  const search = {
+    city: matchCity.value.trim().toLowerCase(),
+    county: matchCounty.value.trim().toLowerCase(),
+    state: matchState.value,
+    type: matchType.value.trim().toLowerCase(),
+    zoning: matchZoning.value.trim().toLowerCase(),
+    utilities: matchUtilities.value.trim().toLowerCase(),
+    minPrice: matchMinPrice.value,
+    maxPrice: matchMaxPrice.value,
+    minLot: matchMinLot.value,
+    maxLot: matchMaxLot.value,
+    id: Date.now()
+  };
+
+  savedSearches.push(search);
+  safeSetItem("savedSearches", JSON.stringify(savedSearches));
+  renderSavedSearches();
+  performSearch(search);
+}
+
+function performSearch(search) {
+  const results = buyers.filter(b => {
+    if (search.city && (b.city || "").toLowerCase() !== search.city) return false;
+    if (search.county && (b.county || "").toLowerCase() !== search.county) return false;
+    if (search.state && b.state !== search.state) return false;
+    if (search.type && (b.type || "").toLowerCase() !== search.type) return false;
+    if (search.zoning && (b.zoning || "").toLowerCase().indexOf(search.zoning) === -1) return false;
+    if (search.utilities && (b.utilities || "").toLowerCase().indexOf(search.utilities) === -1) return false;
+    if (search.minPrice && (!b.maxPrice || parseFloat(b.maxPrice) < parseFloat(search.minPrice))) return false;
+    if (search.maxPrice && (!b.minPrice || parseFloat(b.minPrice) > parseFloat(search.maxPrice))) return false;
+    if (search.minLot && (!b.maxLot || parseFloat(b.maxLot) < parseFloat(search.minLot))) return false;
+    if (search.maxLot && (!b.minLot || parseFloat(b.minLot) > parseFloat(search.maxLot))) return false;
+    return true;
+  });
+
+  const container = document.getElementById("matchResults");
+  if (results.length === 0) {
+    container.innerHTML = "<p>No matching buyers found.</p>";
+    return;
+  }
+
+  container.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th><th>Phone</th><th>Email</th><th>Type</th>
+          <th>City</th><th>State</th><th>Price Range</th><th>Lot Range</th>
+          <th>Zoning</th><th>Utilities</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${results.map(b => `
+          <tr>
+            <td>${b.name}</td>
+            <td>${b.phone}</td>
+            <td>${b.email}</td>
+            <td>${b.type}</td>
+            <td>${b.city}</td>
+            <td>${b.state}</td>
+            <td>${b.minPrice || "?"} - ${b.maxPrice || "?"}</td>
+            <td>${b.minLot || "?"} - ${b.maxLot || "?"}</td>
+            <td>${b.zoning || "Any"}</td>
+            <td>${b.utilities || "Any"}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderSavedSearches() {
+  const container = document.getElementById("savedSearches");
+  container.innerHTML = "<h3>Saved Searches</h3>";
+  savedSearches.forEach(s => {
+    const div = document.createElement("div");
+    div.className = "saved-search";
+    div.innerHTML = `
+      <strong>${s.city || "Any City"}, ${s.state || ""}</strong><br>
+      Price: ${s.minPrice || "?"} - ${s.maxPrice || "?"}<br>
+      <button class="secondary" onclick='performSearch(${JSON.stringify(s)})'>Run</button>
+      <button class="danger" onclick="deleteSavedSearch(${s.id})">Delete</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function deleteSavedSearch(id) {
+  savedSearches = savedSearches.filter(s => s.id !== id);
+  safeSetItem("savedSearches", JSON.stringify(savedSearches));
+  renderSavedSearches();
+}
+
+// ---------------- PIPELINE ----------------
+function renderPipeline() {
+  const container = document.getElementById("pipelineContainer");
+  container.innerHTML = "";
+  const stages = ["New", "Contacted", "Negotiating", "Under Contract", "Marketing", "Closed", "Dead"];
+  stages.forEach(stage => {
+    const col = document.createElement("div");
+    col.className = "pipeline-column";
+    col.innerHTML = `<h3>${stage}</h3>`;
+    sellers.filter(s => s.status === stage).forEach(s => {
+      const card = document.createElement("div");
+      card.className = "pipeline-card";
+      card.innerHTML = `
+        <strong>${s.name}</strong><br>
+        ${s.city}, ${s.state}<br>
+        Asking: $${s.askingPrice || ""}<br>
+        Source: ${s.source}<br>
+        <select onchange="updateSellerStage(${s.id}, this.value)">
+          ${stages.map(st => `<option value="${st}" ${st===s.status?"selected":""}>${st}</option>`).join("")}
+        </select>
+      `;
+      col.appendChild(card);
+    });
+    container.appendChild(col);
+  });
+}
+
+function updateSellerStage(id, newStage) {
+  const seller = sellers.find(s => s.id === id);
+  if (seller) {
+    seller.status = newStage;
+    if (newStage === "Closed") {
+      const profit = prompt("Enter your profit on this deal:");
+      portfolio.push({
+        id: Date.now(),
+        seller: seller.name,
+        address: seller.address,
+        city: seller.city,
+        state: seller.state,
+        purchasePrice: seller.offer || seller.askingPrice,
+        endBuyerPrice: "",
+        profit: profit || "",
+        dateClosed: new Date().toLocaleDateString()
+      });
+      safeSetItem("portfolio", JSON.stringify(portfolio));
+    }
+    safeSetItem("sellers", JSON.stringify(sellers));
+    renderSellers();
+    updateDashboard();
+    renderPipeline();
+  }
+}
+
+// ---------------- PORTFOLIO ----------------
+function renderPortfolio() {
+  const tbody = document.querySelector("#portfolioTable tbody");
+  tbody.innerHTML = "";
+  portfolio.forEach((p, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.seller}</td>
+      <td>${p.address}</td>
+      <td>${p.city}</td>
+      <td>${p.state}</td>
+      <td>${p.purchasePrice}</td>
+      <td>${p.endBuyerPrice}</td>
+      <td>${p.profit}</td>
+      <td>${p.dateClosed}</td>
+      <td>
+        <button onclick="editPortfolio(${index})">Edit</button>
+        <button class="danger" onclick="deletePortfolio(${index})">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function editPortfolio(index) {
+  const p = portfolio[index];
+  const newProfit = prompt("Edit profit:", p.profit);
+  if (newProfit !== null) {
+    p.profit = newProfit;
+    safeSetItem("portfolio", JSON.stringify(portfolio));
+    renderPortfolio();
+    updateDashboard();
+  }
+}
+
+function deletePortfolio(index) {
+  if (confirm("Delete this closed deal?")) {
+    portfolio.splice(index, 1);
+    safeSetItem("portfolio", JSON.stringify(portfolio));
+    renderPortfolio();
+    updateDashboard();
+  }
+}
+
+// ---------------- TITLE COMPANIES ----------------
+function addTitleCompany() {
+  const tc = {
+    id: Date.now(),
+    name: titleName.value,
+    email: titleEmail.value,
+    phone: titlePhone.value,
+    city: titleCity.value,
+    state: titleState.value,
+    address: titleAddress.value
+  };
+  titleCompanies.push(tc);
+  safeSetItem("titleCompanies", JSON.stringify(titleCompanies));
+  titleName.value = "";
+  titleEmail.value = "";
+  titlePhone.value = "";
+  titleCity.value = "";
+  titleAddress.value = "";
+  renderTitleCompanies();
+  updateDashboard();
+}
+
+function renderTitleCompanies() {
+  const tbody = document.querySelector("#titleCompaniesTable tbody");
+  tbody.innerHTML = "";
+  titleCompanies.forEach((tc, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${tc.name}</td>
+      <td>${tc.email}</td>
+      <td>${tc.phone}</td>
+      <td>${tc.city}</td>
+      <td>${tc.state}</td>
+      <td>${tc.address}</td>
+      <td>
+        <button onclick="editTitleCompany(${index})">Edit</button>
+        <button class="danger" onclick="deleteTitleCompany(${index})">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function editTitleCompany(index) {
+  const tc = titleCompanies[index];
+  titleName.value = tc.name;
+  titleEmail.value = tc.email;
+  titlePhone.value = tc.phone;
+  titleCity.value = tc.city;
+  titleState.value = tc.state;
+  titleAddress.value = tc.address;
+  titleCompanies.splice(index, 1);
+  safeSetItem("titleCompanies", JSON.stringify(titleCompanies));
+  renderTitleCompanies();
+  updateDashboard();
+}
+
+function deleteTitleCompany(index) {
+  if (confirm("Delete this title company?")) {
+    titleCompanies.splice(index, 1);
+    safeSetItem("titleCompanies", JSON.stringify(titleCompanies));
+    renderTitleCompanies();
+    updateDashboard();
+  }
+}
+
+// ---------------- MAP ----------------
+let map;
+let buyerMarkers = [];
+let sellerMarkers = [];
+
+function initMap() {
+  map = L.map("mapContainer").setView([37.0902, -95.7129], 4);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors"
+  }).addTo(map);
+}
+
+function refreshMapPins() {
+  buyerMarkers.forEach(m => map.removeLayer(m));
+  sellerMarkers.forEach(m => map.removeLayer(m));
+  buyerMarkers = [];
+  sellerMarkers = [];
+
+  buyers.forEach(b => {
+    if (b.lat && b.lng) {
+      const popupContent = `
+        <strong>Buyer:</strong> ${b.name}<br>
+        ${b.city}, ${b.state}<br>
+        Type: ${b.type}<br>
+        Price: ${b.minPrice || "?"} - ${b.maxPrice || "?"}<br>
+        Lot: ${b.minLot || "?"} - ${b.maxLot || "?"}<br>
+        Zoning: ${b.zoning || "Any"}<br>
+        Utilities: ${b.utilities || "Any"}<br>
+        Phone: ${b.phone}<br>
+        Email: ${b.email}<br>
+        <button class="streetview-btn" onclick="openStreetView(${b.lat},${b.lng})">Street View</button>
+      `;
+      const marker = L.marker([b.lat, b.lng], { icon: L.icon({ iconUrl: "https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png", iconSize: [32, 32], iconAnchor: [16, 32] }) })
+        .addTo(map)
+        .bindPopup(popupContent);
+      buyerMarkers.push(marker);
+    }
+  });
+
+  sellers.forEach(s => {
+    if (s.lat && s.lng) {
+      const popupContent = `
+        <strong>Seller:</strong> ${s.name}<br>
+        ${s.address || ""}<br>
+        ${s.city}, ${s.state}<br>
+        Asking: $${s.askingPrice || ""}<br>
+        Phone: ${s.phone}<br>
+        Email: ${s.email}<br>
+        <button class="streetview-btn" onclick="openStreetView(${s.lat},${s.lng})">Street View</button>
+      `;
+      const marker = L.marker([s.lat, s.lng], { icon: L.icon({ iconUrl: "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png", iconSize: [32, 32], iconAnchor: [16, 32] }) })
+        .addTo(map)
+        .bindPopup(popupContent);
+      sellerMarkers.push(marker);
+    }
+  });
+}
+
+function openStreetView(lat, lng) {
+  const url = `https://www.google.com/maps?q=&layer=c&cbll=${lat},${lng}`;
+  window.open(url, "_blank");
+}
+
+// ---------------- CALCULATORS ----------------
+function calculateOffer() {
+  const arv = parseFloat(calcARV.value) || 0;
+  const repairs = parseFloat(calcRepairs.value) || 0;
+  const closing = parseFloat(calcClosingCosts.value) || 0;
+  const mao = arv * 0.7 - repairs - closing;
+  calcResult.innerText = `$${mao.toFixed(2)}`;
+}
+
+function calculateAssignment() {
+  const contractPrice = parseFloat(assignContractPrice.value) || 0;
+  const endBuyerPrice = parseFloat(assignEndBuyerPrice.value) || 0;
+  const jvPercent = parseFloat(assignJVPercent.value) || 0;
+  const assignmentFee = endBuyerPrice - contractPrice;
+  const jvShare = assignmentFee * (jvPercent / 100);
+  assignFee.innerText = `$${assignmentFee.toFixed(2)}`;
+  assignJVShare.innerText = `$${jvShare.toFixed(2)}`;
+}
+
+function calculateIRSSetAside() {
+  const profit = parseFloat(document.getElementById("irsProfit").value) || 0;
+  let rate = parseFloat(document.getElementById("irsRate").value);
+  if (isNaN(rate) || rate <= 0) {
+    rate = parseFloat(localStorage.getItem("irsDefaultRate")) || 25;
+    document.getElementById("irsRate").value = rate;
+  }
+  safeSetItem("irsDefaultRate", String(rate));
+  const setAside = profit * (rate / 100);
+  document.getElementById("irsResult").innerText = `$${setAside.toFixed(2)}`;
+}
+
+// ---------------- FOLLOWUPS ----------------
+function renderFollowUps() {
+  const tbody = document.querySelector("#followupsTable tbody");
+  tbody.innerHTML = "";
+
+  const allContacts = [
+    ...buyers.map(b => ({ ...b, typeLabel: "Buyer" })),
+    ...sellers.map(s => ({ ...s, typeLabel: "Seller" }))
+  ];
+
+  allContacts.forEach((c) => {
+    if (c.followUpDate) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${c.name}</td>
+        <td>${c.typeLabel}</td>
+        <td>${c.phone || ""}</td>
+        <td>${c.email || ""}</td>
+        <td>${c.followUpDate}</td>
+        <td>${c.followUpTask || ""}</td>
+        <td>${c.notes || ""}</td>
+        <td>
+          <button onclick="markFollowUpDone('${c.id}')">Done</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+}
+
+function markFollowUpDone(id) {
+  buyers.forEach(b => { if (b.id == id) b.followUpDate = ""; });
+  sellers.forEach(s => { if (s.id == id) s.followUpDate = ""; });
+  safeSetItem("buyers", JSON.stringify(buyers));
+  safeSetItem("sellers", JSON.stringify(sellers));
+  renderFollowUps();
+}
+
+// ---------------- TEMPLATES ----------------
+function addTemplate() {
+  const template = {
+    id: Date.now(),
+    name: templateName.value,
+    type: templateType.value,
+    body: templateBody.value
+  };
+  templates.push(template);
+  safeSetItem("templates", JSON.stringify(templates));
+  templateName.value = "";
+  templateBody.value = "";
+  renderTemplates();
+}
+
+function renderTemplates() {
+  const tbody = document.querySelector("#templatesTable tbody");
+  tbody.innerHTML = "";
+  templates.forEach((t, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${t.name}</td>
+      <td>${t.type}</td>
+      <td>${t.body.substring(0, 50)}...</td>
+      <td>
+        <button onclick="useTemplate(${index})">Use</button>
+        <button class="secondary" onclick="editTemplate(${index})">Edit</button>
+        <button class="danger" onclick="deleteTemplate(${index})">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function useTemplate(index) {
+  const t = templates[index];
+  if (t.type === "sms") {
+    alert("Copy this SMS:\n\n" + t.body);
+  } else {
+    alert("Copy this Email:\n\n" + t.body);
+  }
+}
+
+function editTemplate(index) {
+  const t = templates[index];
+  templateName.value = t.name;
+  templateType.value = t.type;
+  templateBody.value = t.body;
+  templates.splice(index, 1);
+  safeSetItem("templates", JSON.stringify(templates));
+  renderTemplates();
+}
+
+function deleteTemplate(index) {
+  if (confirm("Delete this template?")) {
+    templates.splice(index, 1);
+    safeSetItem("templates", JSON.stringify(templates));
+    renderTemplates();
+  }
+}
+
+// ---------------- MARKETING ----------------
+function previewMarketingImage(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    if (!file.type.startsWith("image/")) {
+      alert("Only image files are allowed.");
+      input.value = "";
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image must be under 2MB.");
+      input.value = "";
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => preview.src = e.target.result;
+    reader.readAsDataURL(file);
+  }
+}
+
+function deleteMarketingImage(inputId, previewId) {
+  document.getElementById(inputId).value = "";
+  document.getElementById(previewId).src = "";
+}
+
+function generatePostcard() {
+  const message = postcardMessage.value || "";
+  postcardOutput.textContent = `POSTCARD MESSAGE:\n\n${message}`;
+}
+
+function generateBuyerPacket() {
+  const address = packetAddress.value || "";
+  const price = packetPrice.value || "";
+  const arv = packetARV.value || "";
+  const notes = packetNotes.value || "";
+  packetOutput.textContent = `BUYER PACKET\n\nAddress: ${address}\nPrice: $${price}\nARV: $${arv}\n\nNotes:\n${notes}`;
+}
+
+function generateFlyer() {
+  const address = flyerAddress.value || "";
+  const price = flyerPrice.value || "";
+  const arv = flyerARV.value || "";
+  const notes = flyerNotes.value || "";
+  flyerOutput.textContent = `DEAL FLYER\n\nAddress: ${address}\nPrice: $${price}\nARV: $${arv}\n\nNotes:\n${notes}`;
+}
+
+function clearOutput(outputId) {
+  document.getElementById(outputId).textContent = "";
+}
+
+function downloadText(elementId, filename) {
+  const text = document.getElementById(elementId).textContent;
+  if (!text) {
+    alert("Nothing to download.");
+    return;
+  }
+  const blob = new Blob([text], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+// #1 FIX: download marketing doc WITH image included
+function downloadMarketingDoc(outputElementId, filename, previewImgId) {
+  const text = document.getElementById(outputElementId).textContent || "";
+  const imgSrc = (document.getElementById(previewImgId) && document.getElementById(previewImgId).src) ? document.getElementById(previewImgId).src : "";
+  if (!text && !imgSrc) {
+    alert("Nothing to download.");
+    return;
+  }
+  const html = `<!doctype html>
+<html><head><meta charset="utf-8"><title>${filename.replace(/</g,"&lt;")}</title>
+<style>body{font-family:Arial,sans-serif;padding:20px}img{max-width:520px;max-height:520px;border:1px solid #ccc;border-radius:10px;margin:10px 0}pre{white-space:pre-wrap;background:#f7f7f7;padding:12px;border-radius:10px;border:1px solid #ddd}</style>
+</head><body>
+${imgSrc ? `<img src="${imgSrc}">` : ``}
+${text ? `<pre>${text.replace(/</g,"&lt;")}</pre>` : ``}
+</body></html>`;
+  const blob = new Blob([html], { type: "text/html" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+// ---------------- PERMIT LEADS ----------------
+function addPermitLead() {
+  const lead = {
+    id: Date.now(),
+    owner: permitOwner.value,
+    address: permitAddress.value,
+    type: permitType.value,
+    value: permitValue.value,
+    pulledBy: permitPulledBy.value,
+    date: permitDate.value,
+    notes: permitNotes.value
+  };
+  permitLeads.push(lead);
+  safeSetItem("permitLeads", JSON.stringify(permitLeads));
+  permitOwner.value = "";
+  permitAddress.value = "";
+  permitType.value = "";
+  permitValue.value = "";
+  permitPulledBy.value = "";
+  permitDate.value = "";
+  permitNotes.value = "";
+  renderPermitLeads();
+}
+
+function renderPermitLeads() {
+  const tbody = document.querySelector("#permitTable tbody");
+  tbody.innerHTML = "";
+  permitLeads.forEach((p, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.owner}</td>
+      <td>${p.address}</td>
+      <td>${p.type}</td>
+      <td>${p.value}</td>
+      <td>${p.pulledBy}</td>
+      <td>${p.date}</td>
+      <td>${p.notes}</td>
+      <td>
+        <button onclick="editPermitLead(${index})">Edit</button>
+        <button class="danger" onclick="deletePermitLead(${index})">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function editPermitLead(index) {
+  const p = permitLeads[index];
+  permitOwner.value = p.owner;
+  permitAddress.value = p.address;
+  permitType.value = p.type;
+  permitValue.value = p.value;
+  permitPulledBy.value = p.pulledBy;
+  permitDate.value = p.date;
+  permitNotes.value = p.notes;
+  permitLeads.splice(index, 1);
+  safeSetItem("permitLeads", JSON.stringify(permitLeads));
+  renderPermitLeads();
+}
+
+function deletePermitLead(index) {
+  if (confirm("Delete this permit lead?")) {
+    permitLeads.splice(index, 1);
+    safeSetItem("permitLeads", JSON.stringify(permitLeads));
+    renderPermitLeads();
+  }
+}
+
+// ---------------- CONTRACTS ----------------
+function populateContractDropdowns() {
+  const sellerSelect = document.getElementById("contractSellerSelect");
+  const buyerSelect = document.getElementById("contractBuyerSelect");
+  sellerSelect.innerHTML = `<option value="">Select Seller</option>`;
+  buyerSelect.innerHTML = `<option value="">Select Buyer</option>`;
+  sellers.forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s.id;
+    opt.textContent = s.name;
+    sellerSelect.appendChild(opt);
+  });
+  buyers.forEach(b => {
+    const opt = document.createElement("option");
+    opt.value = b.id;
+    opt.textContent = b.name;
+    buyerSelect.appendChild(opt);
+  });
+}
+
+function renderContracts() {
+  document.getElementById("contractVacantLand").textContent = VACANT_LAND_CONTRACT;
+  document.getElementById("contractResidential").textContent = RESIDENTIAL_CONTRACT;
+  document.getElementById("contractAssignment").textContent = ASSIGNMENT_CONTRACT;
+  document.getElementById("contractClosingSheet").textContent = CLOSING_DETAIL_SHEET;
+}
+
+function downloadContract(elementId, filename) {
+  const text = document.getElementById(elementId).textContent;
+  const blob = new Blob([text], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+function openHelloSign() {
+  window.open("https://www.hellosign.com", "_blank");
+}
+
+// #8 FIX: Separate upload section for contracts & closing detail sheet with edit/delete/upload/download
+function uploadMyDoc() {
+  const fileInput = document.getElementById("myDocFile");
+  const category = document.getElementById("myDocCategory").value;
+  const file = fileInput.files[0];
+  if (!file) {
+    alert("Please select a file to upload.");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const content = e.target.result || "";
+    const doc = {
+      id: Date.now(),
+      name: file.name,
+      category: category,
+      content: content
+    };
+    myDocs.push(doc);
+    if (safeSetItem("myDocs", JSON.stringify(myDocs))) {
+      fileInput.value = "";
+      renderMyDocs();
+    }
+  };
+  reader.readAsText(file);
+}
+
+function renderMyDocs() {
+  const tbody = document.querySelector("#myDocsTable tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  myDocs.forEach((d) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${d.name}</td>
+      <td>${d.category}</td>
+      <td>
+        <button onclick="editMyDoc(${d.id})">Edit</button>
+        <button class="secondary" onclick="downloadMyDoc(${d.id})">Download</button>
+        <button class="danger" onclick="deleteMyDoc(${d.id})">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function editMyDoc(id) {
+  const doc = myDocs.find(x => x.id === id);
+  if (!doc) return;
+  editingDocId = id;
+  document.getElementById("docEditTitle").innerText = `${doc.name} (${doc.category})`;
+  document.getElementById("docEditBody").value = doc.content || "";
+  document.getElementById("docEditModal").style.display = "flex";
+}
+
+function saveDocEdit() {
+  if (!editingDocId) return;
+  const idx = myDocs.findIndex(x => x.id === editingDocId);
+  if (idx === -1) return;
+  myDocs[idx].content = document.getElementById("docEditBody").value || "";
+  if (safeSetItem("myDocs", JSON.stringify(myDocs))) {
+    closeDocEditModal();
+    renderMyDocs();
+  }
+}
+
+function closeDocEditModal() {
+  document.getElementById("docEditModal").style.display = "none";
+  document.getElementById("docEditTitle").innerText = "";
+  document.getElementById("docEditBody").value = "";
+  editingDocId = null;
+}
+
+function downloadMyDoc(id) {
+  const doc = myDocs.find(x => x.id === id);
+  if (!doc) return;
+  const blob = new Blob([doc.content || ""], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = doc.name || "document.txt";
+  link.click();
+}
+
+function deleteMyDoc(id) {
+  if (!confirm("Delete this uploaded document?")) return;
+  myDocs = myDocs.filter(x => x.id !== id);
+  safeSetItem("myDocs", JSON.stringify(myDocs));
+  renderMyDocs();
+}
+
+// ---------------- IMPORT / EXPORT ----------------
+function importCSV() {
+  const fileInput = document.getElementById("csvFileInput");
+  const file = fileInput.files[0];
+  if (!file) {
+    alert("Please select a CSV file.");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const rows = text.split("\n").map(r => r.split(","));
+    const headers = rows.shift().map(h => h.trim().toLowerCase());
+    const type = importType.value;
+
+    rows.forEach(row => {
+      if (row.length < headers.length) return;
+      const obj = {};
+      headers.forEach((h, i) => obj[h] = row[i]?.trim() || "");
+
+      if (type === "buyers") {
+        buyers.push({
+          id: Date.now() + Math.random(),
+          name: obj.name || "",
+          email: obj.email || "",
+          phone: obj.phone || "",
+          contactType: "Regular",
+          type: obj.type || "",
+          city: obj.city || "",
+          county: obj.county || "",
+          state: obj.state || "",
+          minPrice: obj.min_price || "",
+          maxPrice: obj.max_price || "",
+          minLot: obj.min_lot || "",
+          maxLot: obj.max_lot || "",
+          zoning: obj.zoning || "",
+          utilities: obj.utilities || "",
+          address: obj.address || "",
+          zip: obj.zip || "",
+          lat: "",
+          lng: "",
+          followUpDate: "",
+          notes: ""
+        });
+      } else {
+        sellers.push({
+          id: Date.now() + Math.random(),
+          name: obj.name || "",
+          email: obj.email || "",
+          phone: obj.phone || "",
+          type: obj.type || "",
+          city: obj.city || "",
+          state: obj.state || "",
+          address: obj.address || "",
+          zip: obj.zip || "",
+          lat: "",
+          lng: "",
+          apn: obj.apn || "",
+          askingPrice: obj.price || "",
+          lotSize: obj.lot_size || "",
+          zoning: obj.zoning || "",
+          utilities: obj.utilities || "",
+          arv: "",
+          repairs: "",
+          offer: "",
+          jvSplit: "",
+          emd: "",
+          closingDate: "",
+          titleCompany: "",
+          motivation: "Motivated",
+          status: "New",
+          source: "Import",
+          notes: "",
+          followUpDate: "",
+          followUpTask: "",
+          image: ""
+        });
+      }
+    });
+
+    safeSetItem("buyers", JSON.stringify(buyers));
+    safeSetItem("sellers", JSON.stringify(sellers));
+    renderBuyers();
+    renderSellers();
+    updateDashboard();
+    refreshMapPins();
+    renderHotMarkets();
+    alert("Import complete!");
+  };
+  reader.readAsText(file);
+}
+
+function exportBuyers() {
+  const headers = ["name","email","phone","contactType","type","city","county","state","minPrice","maxPrice","minLot","maxLot","zoning","utilities","address","zip","followUpDate","notes"];
+  const rows = buyers.map(b => headers.map(h => b[h] || ""));
+  downloadCSV([headers, ...rows], "buyers_export.csv");
+}
+
+function exportSellers() {
+  const headers = ["name","email","phone","type","city","state","address","zip","apn","askingPrice","lotSize","zoning","utilities","arv","repairs","offer","jvSplit","emd","closingDate","titleCompany","motivation","status","source","notes","followUpDate","followUpTask"];
+  const rows = sellers.map(s => headers.map(h => s[h] || ""));
+  downloadCSV([headers, ...rows], "sellers_export.csv");
+}
+
+function exportTitleCompanies() {
+  const headers = ["name","email","phone","city","state","address"];
+  const rows = titleCompanies.map(tc => headers.map(h => tc[h] || ""));
+  downloadCSV([headers, ...rows], "title_companies_export.csv");
+}
+
+function downloadCSV(data, filename) {
+  const csvContent = data.map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+// ---------------- COMMUNICATION (Google Voice) ----------------
+function callPerson(phone) {
+  if (!phone) {
+    alert("No phone number available.");
+    return;
+  }
+  window.open(`https://voice.google.com/u/0/calls?a=nc&number=${encodeURIComponent(phone)}`, "_blank");
+}
+
+function sendSMS(phone) {
+  if (!phone) {
+    alert("No phone number available.");
+    return;
+  }
+  window.open(`https://voice.google.com/u/0/messages?itemId=t.${encodeURIComponent(phone)}`, "_blank");
+}
+
+function sendEmail(email) {
+  if (!email) {
+    alert("No email available.");
+    return;
+  }
+  window.open(`mailto:${email}`, "_blank");
+}
+
+// ---------------- SKIP TRACE ----------------
+function skipTrace(phone, email, name) {
+  const query = phone || email || name || "";
+  if (!query) {
+    alert("No info to skip trace.");
+    return;
+  }
+  window.open(`https://www.truepeoplesearch.com/results?name=${encodeURIComponent(query)}`, "_blank");
+  window.open(`https://www.fastpeoplesearch.com/name/${encodeURIComponent(query)}`, "_blank");
+}
+
+// ---------------- DASHBOARD UPDATE ----------------
+function updateDashboard() {
+  totalBuyers.innerText = buyers.length;
+  totalSellers.innerText = sellers.length;
+  totalTitleCompanies.innerText = titleCompanies.length;
+  totalMatches.innerText = savedSearches.length;
+  totalProfit.innerText = "$" + portfolio.reduce((sum, p) => sum + (parseFloat(p.profit) || 0), 0).toFixed(2);
+  totalDFD.innerText = sellers.filter(s => s.source === "Driving for Dollars").length;
+
+  // #5 FIX + county count added to Buyers by Location
+  const byCityState = {};
+  const byCounty = {};
+
+  buyers.forEach(b => {
+    const key = `${b.city}, ${b.state}`;
+    byCityState[key] = (byCityState[key] || 0) + 1;
+
+    const countyName = (b.county || "").trim();
+    const countyKey = countyName ? `${countyName} County, ${b.state}` : "";
+    if (countyKey) byCounty[countyKey] = (byCounty[countyKey] || 0) + 1;
+  });
+
+  let output = "";
+  Object.keys(byCityState).sort().forEach(loc => {
+    output += `${loc}: ${byCityState[loc]} buyers\n`;
+  });
+
+  output += `\n--- County Counts ---\n`;
+  if (Object.keys(byCounty).length === 0) {
+    output += "No county data yet.\n";
+  } else {
+    Object.keys(byCounty).sort().forEach(c => {
+      output += `${c}: ${byCounty[c]} buyers\n`;
+    });
+  }
+
+  buyersByLocation.textContent = output || "No buyers yet.";
+}
+
+// ---------------- INIT APP ----------------
+function initApp() {
+  populateStates();
+  renderHotMarkets();
+  renderBuyers();
+  renderSellers();
+  renderTitleCompanies();
+  renderTemplates();
+  renderPermitLeads();
+  renderSavedSearches();
+  renderFollowUps();
+  renderMyDocs();
+  updateDashboard();
+  updateKPIDashboard();
+  initMap();
+  refreshMapPins();
+}
+
+// ---------------- CONTRACT TEXT (UNCHANGED – WHOLESALE FRIENDLY) ----------------
+const VACANT_LAND_CONTRACT = `
+[Vacant Land Purchase & Sale Agreement
+This Agreement is made on: __________ (Date)
+Seller: ________________________________
+Buyer: _________________________________
+Property Address (if any): ____________________________________________
+APN / Parcel Number: ________________________________
+Acreage (Approx.): __________ acres
+Legal Description (if available): _______________________________________
+
+1. Purchase Price
+Buyer agrees to purchase the Property for $____________.
+2. Earnest Money
+Buyer shall deposit $____________ earnest money with the Title/Escrow Company within 3
+business days of acceptance. Earnest money is refundable during the inspection period.
+3. Closing
+Closing shall occur on or before ____________ (Closing Date), unless mutually extended in
+writing.
+Title / Escrow Company: ______________________________________________
+Title / Escrow Company Phone (optional): _______________________________
+4. Property Condition
+The Property is sold AS-IS, WHERE-IS, with no warranties by Seller, expressed or implied.
+5. Access
+Seller agrees to allow Buyer and Buyer’s partners, agents, or contractors reasonable access to
+the Property for inspection and due diligence purposes.
+
+6. Inspection / Due Diligence Period
+This Agreement is contingent upon Buyer’s inspection and approval of the Property within
+____________ days from acceptance. Buyer may cancel this Agreement for any reason during
+this period and receive a full refund of earnest money.
+7. Assignment
+Buyer may assign this Agreement, in whole or in part, to another party without further approval
+from Seller. Buyer may collect an assignment fee in connection with such assignment. The
+assignment fee shall come from the end buyer and not from the Seller. The Seller shall
+receive the purchase price agreed to in this Agreement.
+8. Taxes & Closing Costs
+Property taxes shall be prorated as of the date of closing. Each party shall pay their own
+customary closing costs unless otherwise agreed in writing.
+9. Default
+If Buyer defaults after the inspection period, earnest money may be released to Seller as
+liquidated damages. If Seller defaults, Buyer may cancel this Agreement and receive a full
+refund of earnest money.
+10. Additional Terms (Optional)
+
+Signatures
+Seller Signature: ________________________________ Date: ____________
+Seller Printed Name: _____________________________
+Buyer Signature: ________________________________ Date: ____________
+Buyer Printed Name: _____________________________]
+`;
+
+const RESIDENTIAL_CONTRACT = `
+[Residential Purchase & Sale Agreement
+This Agreement is made on: __________ (Date)
+Seller: ________________________________
+Buyer: _________________________________
+Property Address: ______________________________________________
+APN / Parcel Number (if applicable): ________________________________
+
+1. Purchase Price
+Buyer agrees to purchase the Property for $____________.
+2. Earnest Money
+Buyer shall deposit $____________ earnest money with the Title/Escrow Company within 3
+business days of acceptance. Earnest money is refundable during the inspection period.
+3. Closing
+Closing shall occur on or before ____________ (Closing Date), unless mutually extended in
+writing.
+Title / Escrow Company: ______________________________________________
+Title / Escrow Company Phone (optional): _______________________________
+4. Property Condition
+The Property is sold AS-IS, WHERE-IS, with no warranties by Seller, expressed or implied.
+5. Access
+Seller agrees to allow Buyer and Buyer’s agents, contractors, or inspectors reasonable access
+to the Property for inspection and due diligence purposes.
+6. Inspection / Due Diligence Period
+
+This Agreement is contingent upon Buyer’s inspection and approval of the Property within
+____________ days from acceptance. Buyer may cancel this Agreement for any reason during
+this period and receive a full refund of earnest money.
+7. Assignment
+Buyer may assign this Agreement, in whole or in part, to another party without further approval
+from Seller. Buyer may collect an assignment fee in connection with such assignment. The
+assignment fee shall come from the end buyer and not from the Seller. The Seller shall
+receive the purchase price agreed to in this Agreement.
+8. Taxes, HOA, & Closing Costs
+Property taxes, HOA fees (if any), and other applicable prorations shall be calculated as of the
+date of closing. Each party shall pay their own customary closing costs unless otherwise agreed
+in writing.
+9. Default
+If Buyer defaults after the inspection period, earnest money may be released to Seller as
+liquidated damages. If Seller defaults, Buyer may cancel this Agreement and receive a full
+refund of earnest money.
+10. Additional Terms (Optional)
+
+Signatures
+Seller Signature: ________________________________ Date: ____________
+Seller Printed Name: _____________________________
+Buyer Signature: ________________________________ Date: ____________
+Buyer Printed Name: _____________________________]
+`;
+
+const ASSIGNMENT_CONTRACT = `
+[Assignment of Contract
+
+Date: ______________________
+Assignor (Wholesaler): ____________________________________
+Assignee (End Buyer / Investor): ____________________________________
+Property Address: ______________________________________________
+APN / Parcel Number (if applicable): ________________________________
+Original Purchase Agreement Date: ________________________________
+Seller Name: ________________________________
+
+1. Assignment
+Assignor hereby assigns all rights, interests, and obligations in the Residential Purchase & Sale
+Agreement (the "Original Contract") to Assignee.
+Note to Assignee: Assignor is collecting an assignment fee as part of this transaction. This fee
+comes from the end buyer (Assignee) and not from the Seller, who will receive the purchase
+price agreed to in the Original Contract. By signing, Assignee acknowledges and agrees to pay
+the assignment fee at closing.
+2. Assignment Fee
+Amount of Assignment Fee: $______________________________
+The assignment fee shall be paid at closing by the Title/Escrow Company directly to Assignor
+from Assignee’s funds.
+3. Terms of Original Contract
+Assignee accepts and agrees to perform all buyer obligations in the Original Contract and is
+bound by all terms and conditions therein.
+
+4. Closing
+Closing shall occur according to the Original Contract. All funds will be processed by:
+Title / Escrow Company: ______________________________________________
+Title / Escrow Company Phone (optional): _______________________________
+5. No Liability to Seller
+Seller is not a party to this Assignment. Assignor remains liable to Seller until the transaction
+closes.
+6. Earnest Money
+Any earnest money previously deposited under the Original Contract will transfer to Assignee at
+closing.
+7. Default
+If Assignee fails to close, the assignment fee is not owed, and Assignor may cancel this
+Assignment Agreement without further liability.
+8. Additional Terms (Optional)
+
+Signatures
+Assignor (Wholesaler)
+Signature: ________________________________ Date: ____________
+Printed Name: _____________________________
+Assignee (End Buyer / Investor)
+Signature: ________________________________ Date: ____________
+Printed Name: _____________________________
+Acknowledged by Title / Escrow (Optional)
+Signature: ________________________________ Date: ____________
+Printed Name: ___________________________]
+`;
+
+const CLOSING_DETAIL_SHEET = `
+[Closing Detail Sheet
+
+For Title Company / Closing Attorney Use Only – No Signatures Required
+
+Closing Information
+Date: ________________________________
+Time: ________________________________
+Location: ________________________________
+
+Title Company or Closing Attorney: ________________________________
+Address: ______________________________________________
+
+Property & Price
+
+Property Address (if any): ______________________________________________
+APN / Parcel Number: ________________________________
+Sales Price: $______________________________
+
+Parties
+
+Seller: ______________________________________________
+
+(Name as shown on Seller’s Contract)
+
+Buyer: ______________________________________________
+
+(Name as shown on Buyer’s Contract)
+
+Assignment Fee (If Applicable)
+Assignment Fee: $______________________________
+
+Assignment fee to be paid directly to Assignor / Wholesaler at closing from buyer’s funds.
+
+Earnest Money Deposits
+Earnest Money Amount: $______________________________
+Apply earnest money toward purchase price and/or closing costs.
+
+Closing Costs
+
+☐ Buyer will pay 100% of closing costs, minus any unpaid property taxes, mortgages, or liens unless
+
+otherwise stated in the Purchase Agreement.
+
+Additional Instructions
+
+Contact Information
+
+For any questions or concerns regarding this closing, please contact:
+Name: ______________________________________________
+Phone: ______________________________________________
+Email (optional): ____________________________________
+
+These Closing Instructions are provided for coordination purposes only and do not amend or supersede
+
+the Purchase & Sale Agreement or Assignment Agreement.]
+`;
+</script></body></html>
