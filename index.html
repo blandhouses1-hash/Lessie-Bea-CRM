@@ -1,4 +1,60 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Lessie Bea CRM 🐝</title><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/><style>body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #ffd1dc, #ffffff); color: #000; margin: 0; padding: 0; } h1, h2, h3 { color: #e91e63; } .container { max-width: 1400px; margin: auto; padding: 20px; } .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; } .nav button { background: #ff69b4; border: none; color: #000; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; } .nav button.active { background: #ff1493; color: #fff; } .section { display: none; } .section.active { display: block; } .card { background: #fff0f5; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ffb6c1; } input, select, textarea, button { padding: 8px; margin: 5px 0; border-radius: 6px; border: 1px solid #ffb6c1; width: 100%; } button { background: #ff69b4; color: #000; font-weight: bold; cursor: pointer; } button.secondary { background: #ffb6c1; } button.danger { background: #e91e63; color: #fff; } table { width: 100%; border-collapse: collapse; margin-top: 10px; } th, td { border: 1px solid #ffb6c1; padding: 6px; font-size: 14px; } th { background: #ffe4e1; } .map-container { height: 400px; border-radius: 10px; overflow: hidden; } .badge { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; } .badge.new { background: #ffb6c1; } .badge.uc { background: #ffc0cb; } .badge.closed { background: #ff69b4; color: #fff; } .login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; } .login-box { background: #fff0f5; padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; border: 1px solid #ffb6c1; } .hidden { display: none; } .flex { display: flex; gap: 10px; flex-wrap: wrap; } .flex > div { flex: 1 1 200px; } .contract-box { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 10px; white-space: pre-wrap; color: #000; border: 1px solid #ffb6c1; } .contract-actions { margin-bottom: 10px; } .pipeline { display: flex; gap: 10px; overflow-x: auto; } .pipeline-column { background: #fff0f5; border-radius: 10px; padding: 10px; min-width: 220px; border: 1px solid #ffb6c1; } .pipeline-column h3 { text-align: center; } .pipeline-card { background: #ffe4e1; border-radius: 8px; padding: 8px; margin-bottom: 8px; font-size: 13px; } .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 999; } .modal-content { background: #fff0f5; padding: 20px; border-radius: 10px; max-width: 700px; width: 100%; border: 1px solid #ffb6c1; } .kpi-buttons button { margin-top: 5px; } .kpi-buttons { display:flex; gap:6px; flex-wrap:wrap; } .image-preview { max-width: 120px; max-height: 120px; border-radius: 8px; border: 1px solid #ffb6c1; display:block; margin-top:6px;} .streetview-btn { background:#ff1493; color:#fff; margin-top:5px; } .match-results { background:#fff; border:1px solid #ffb6c1; border-radius:8px; padding:10px; margin-top:10px; } #buyersByLocation { font-size: 18px; } .hot-btn { background:#ff1493; color:#fff; } .saved-search { border:1px solid #ffb6c1; padding:8px; border-radius:6px; margin-bottom:8px; background:#fff; }</style></head><body><div class="login-screen" id="loginScreen"><div class="login-box"><h2>Login</h2><input id="loginUser" placeholder="Username" type="text"/><input id="loginPass" placeholder="Password" type="password"/><button onclick="login()">Login</button><p id="loginError" style="color:#e91e63;"></p></div></div><div class="hidden" id="app"><div class="container"><h1>Lessie Bea CRM 🐝</h1><div class="nav"><button class="active" onclick="showSection('dashboard')">Dashboard</button><button onclick="showSection('buyers')">Buyers</button><button onclick="showSection('sellers')">Sellers / Deals</button><button onclick="showSection('pipeline')">Deal Pipeline</button><button onclick="showSection('portfolio')">Portfolio</button><button onclick="showSection('titleCompanies')">Title Companies</button><button onclick="showSection('map')">Buyer &amp; Seller Map</button><button onclick="showSection('calculators')">Calculators</button><button onclick="showSection('followups')">Follow-Ups</button><button onclick="showSection('templates')">SMS &amp; Email Templates</button><button onclick="showSection('marketing')">Marketing Tools</button><button onclick="showSection('contracts')">Contracts &amp; Deal Packet</button><button onclick="showSection('importExport')">Import / Export</button></div><div class="section active" id="dashboard"><div class="card"><h2>Dashboard</h2><div class="flex"><div>Total Buyers: <strong id="totalBuyers">0</strong></div><div>Total Sellers / Deals: <strong id="totalSellers">0</strong></div><div>Total Title Companies: <strong id="totalTitleCompanies">0</strong></div><div>Total Matches: <strong id="totalMatches">0</strong></div><div>Total Profit: <strong id="totalProfit">$0</strong></div><div>Driving for Dollars Leads: <strong id="totalDFD">0</strong></div></div></div><div class="card"><h2>📍 Buyers by Location</h2><pre id="buyersByLocation"></pre></div><div class="card"><h2>📊 KPI Tracker</h2><div class="flex"><div><h3>📞 Calls</h3><p>Calls Today: <strong id="callsToday">0</strong></p><p>Calls This Week: <strong id="callsWeek">0</strong></p><p>Calls This Month: <strong id="callsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('calls')">+ Log Call</button><button class="secondary" onclick="removeKPI('calls')">- Remove Call</button></div></div><div><h3>📩 Texts</h3><p>Texts Today: <strong id="textsToday">0</strong></p><p>Texts This Week: <strong id="textsWeek">0</strong></p><p>Texts This Month: <strong id="textsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('texts')">+ Log Text</button><button class="secondary" onclick="removeKPI('texts')">- Remove Text</button></div></div><div><h3>📧 Emails</h3><p>Emails Today: <strong id="emailsToday">0</strong></p><p>Emails This Week: <strong id="emailsWeek">0</strong></p><p>Emails This Month: <strong id="emailsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('emails')">+ Log Email</button><button class="secondary" onclick="removeKPI('emails')">- Remove Email</button></div></div></div><div class="flex"><div><h3>🏠 Sellers</h3><p>Sellers Today: <strong id="sellersToday">0</strong></p><p>Sellers This Week: <strong id="sellersWeek">0</strong></p><p>Sellers This Month: <strong id="sellersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('sellers')">+ Log Seller</button><button class="secondary" onclick="removeKPI('sellers')">- Remove Seller</button></div></div><div><h3>👥 Buyers</h3><p>Buyers Today: <strong id="buyersToday">0</strong></p><p>Buyers This Week: <strong id="buyersWeek">0</strong></p><p>Buyers This Month: <strong id="buyersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('buyers')">+ Log Buyer</button><button class="secondary" onclick="removeKPI('buyers')">- Remove Buyer</button></div></div><div><h3>🧑‍💼 Agents</h3><p>Agents Today: <strong id="agentsToday">0</strong></p><p>Agents This Week: <strong id="agentsWeek">0</strong></p><p>Agents This Month: <strong id="agentsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('agents')">+ Log Agent</button><button class="secondary" onclick="removeKPI('agents')">- Remove Agent</button></div></div><div><h3>📬 Direct Mail</h3><p>Mail Today: <strong id="directMailToday">0</strong></p><p>Mail This Week: <strong id="directMailWeek">0</strong></p><p>Mail This Month: <strong id="directMailMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('directMail')">+ Log Mail Sent</button><button class="secondary" onclick="removeKPI('directMail')">- Remove Mail</button></div></div></div></div></div><div class="section" id="buyers"><div class="card"><h2>Add Buyer</h2><div class="flex"><div><input id="buyerName" placeholder="Name"/></div><div><input id="buyerEmail" placeholder="Email"/></div><div><input id="buyerPhone" placeholder="Phone"/></div><div><select id="buyerContactType"><option>Regular</option><option>Active Buyer</option><option>Agent</option></select></div><div><select id="buyerType"><option>Single Family</option><option>Vacant Land</option><option>Commercial</option><option>Multi-Family</option><option>Alternative</option></select></div><div><input id="buyerCity" placeholder="City"/></div><div><input id="buyerCounty" placeholder="County"/></div><div><select id="buyerState"></select></div><div><input id="buyerMinPrice" placeholder="Min Price" type="number"/></div><div><input id="buyerMaxPrice" placeholder="Max Price" type="number"/></div><div><input id="buyerMinLot" placeholder="Min Lot (acres)" step="0.01" type="number"/></div><div><input id="buyerMaxLot" placeholder="Max Lot (acres)" step="0.01" type="number"/></div><div><input id="buyerZoning" placeholder="Zoning Preference"/></div><div><input id="buyerUtilities" placeholder="Utilities Requirement"/></div><div><input id="buyerAddress" placeholder="Street Address (optional for map)"/></div><div><input id="buyerZip" placeholder="ZIP Code (for map)"/></div><div><input id="buyerLat" placeholder="Latitude (optional)" step="0.000001" type="number"/></div><div><input id="buyerLng" placeholder="Longitude (optional)" step="0.000001" type="number"/></div><div><input id="buyerFollowUpDate" type="date"/></div><div><textarea id="buyerNotes" placeholder="Notes"></textarea></div><div><select id="hotMarketDropdown"><option value="">Select Hot Market</option></select></div><div><button class="hot-btn" onclick="addHotMarket()">Add Hot Market</button></div></div><button onclick="addBuyer()">Add Buyer</button></div><div class="card"><h2>Buyers List</h2><input id="buyerSearch" oninput="filterBuyers()" placeholder="Search buyer..."/><table id="buyersTable"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Contact Type</th><th>Type</th><th>City</th><th>County</th><th>State</th><th>Min Price</th><th>Max Price</th><th>Min Lot</th><th>Max Lot</th><th>Follow-Up</th><th>Notes</th><th>Skip Trace</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="sellers"><div class="card"><h2>Add Seller / Deal</h2><div class="flex"><div><input id="sellerName" placeholder="Seller Name"/></div><div><input id="sellerEmail" placeholder="Email"/></div><div><input id="sellerPhone" placeholder="Phone"/></div><div><select id="sellerType"><option>Single Family</option><option>Vacant Land</option><option>Commercial</option><option>Multi-Family</option></select></div><div><input id="sellerCity" placeholder="City"/></div><div><select id="sellerState"></select></div><div><input id="sellerAddress" placeholder="Street Address"/></div><div><input id="sellerZip" placeholder="ZIP Code"/></div><div><input id="sellerLat" placeholder="Latitude (optional)" step="0.000001" type="number"/></div><div><input id="sellerLng" placeholder="Longitude (optional)" step="0.000001" type="number"/></div><div><input id="sellerAPN" placeholder="APN / Parcel Number"/></div><div><input id="sellerAskingPrice" placeholder="Asking Price" type="number"/></div><div><input id="sellerLotSize" placeholder="Lot Size (acres)" step="0.01" type="number"/></div><div><input id="sellerZoning" placeholder="Zoning"/></div><div><input id="sellerUtilities" placeholder="Utilities"/></div><div><input id="sellerARV" placeholder="ARV" type="number"/></div><div><input id="sellerRepairs" placeholder="Repairs" type="number"/></div><div><input id="sellerOffer" placeholder="Your Offer" type="number"/></div><div><input id="sellerJVSplit" placeholder="JV Split %" type="number"/></div><div><input id="sellerEMD" placeholder="Earnest Money Deposit" type="number"/></div><div><input id="sellerClosingDate" placeholder="Closing Date" type="date"/></div><div><input id="sellerTitleCompany" placeholder="Title / Escrow Company"/></div><div><select id="sellerMotivation"><option value="Motivated">Motivated Seller</option><option value="Non Motivated">Non Motivated Seller</option></select></div><div><select id="sellerStatus"><option value="New">New Lead</option><option value="Contacted">Contacted</option><option value="Negotiating">Negotiating</option><option value="Under Contract">Under Contract</option><option value="Marketing">Marketing</option><option value="Closed">Closed</option><option value="Dead">Dead</option></select></div><div><select id="sellerSource"><option value="Direct">Direct</option><option value="Driving for Dollars">Driving for Dollars</option><option value="Cold Call">Cold Call</option><option value="Text">Text</option><option value="Referral">Referral</option></select></div><div><textarea id="sellerNotes" placeholder="Notes"></textarea></div><div><input id="sellerFollowUpDate" type="date"/></div><div><input id="sellerTask" placeholder="Task"/></div><div><input accept="image/*" id="sellerImage" onchange="previewSellerImage()" type="file"/><img class="image-preview" id="sellerImagePreview"/><button class="secondary" onclick="deleteSellerImage()">Delete Image</button></div></div><button onclick="addSeller()">Add Seller</button></div><div class="card"><h2>Sellers / Deals List</h2><table id="sellersTable"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>City</th><th>State</th><th>Status</th><th>Source</th><th>Asking</th><th>Offer</th><th>ARV</th><th>Repairs</th><th>JV %</th><th>APN</th><th>EMD</th><th>Closing</th><th>Title</th><th>Motivation</th><th>Task</th><th>Notes</th><th>Follow-Up</th><th>Skip Trace</th><th>Actions</th></tr></thead><tbody></tbody></table></div><div class="card"><h2>🔍 Seller Match Search</h2><div class="flex"><div><input id="matchCity" placeholder="City"/></div><div><input id="matchCounty" placeholder="County"/></div><div><select id="matchState"></select></div><div><input id="matchType" placeholder="Property Type"/></div><div><input id="matchZoning" placeholder="Zoning"/></div><div><input id="matchUtilities" placeholder="Utilities"/></div><div><input id="matchMinPrice" placeholder="Min Price" type="number"/></div><div><input id="matchMaxPrice" placeholder="Max Price" type="number"/></div><div><input id="matchMinLot" placeholder="Min Lot (acres)" step="0.01" type="number"/></div><div><input id="matchMaxLot" placeholder="Max Lot (acres)" step="0.01" type="number"/></div></div><button onclick="runSellerMatchSearch()">Search Buyers</button><div id="savedSearches"></div><div class="match-results" id="matchResults"></div></div></div><div class="section" id="pipeline"><div class="card"><h2>Deal Pipeline</h2><div class="pipeline" id="pipelineContainer"></div></div></div><div class="section" id="portfolio"><div class="card"><h2>📂 Closed Deals Portfolio</h2><table id="portfolioTable"><thead><tr><th>Seller</th><th>Address</th><th>City</th><th>State</th><th>Purchase Price</th><th>End Buyer Price</th><th>Profit</th><th>Date Closed</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="titleCompanies"><div class="card"><h2>Add Title Company</h2><div class="flex"><div><input id="titleName" placeholder="Company Name"/></div><div><input id="titleEmail" placeholder="Email"/></div><div><input id="titlePhone" placeholder="Phone"/></div><div><input id="titleCity" placeholder="City"/></div><div><select id="titleState"></select></div><div><input id="titleAddress" placeholder="Address"/></div></div><button onclick="addTitleCompany()">Add Title Company</button></div><div class="card"><h2>Title Companies List</h2><table id="titleCompaniesTable"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>State</th><th>Address</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="map"><div class="card"><h2>Buyer &amp; Seller Map (Drive for Dollars Ready)</h2><div class="map-container" id="mapContainer"></div><p style="margin-top:10px;">Buyers = Blue pins, Sellers = Red pins. Click pin for details or Street View.</p></div></div><div class="section" id="calculators"><div class="card"><h2>Offer Calculator (70% Rule + Repairs)</h2><div class="flex"><div><input id="calcARV" placeholder="ARV" type="number"/></div><div><input id="calcRepairs" placeholder="Repairs" type="number"/></div><div><input id="calcClosingCosts" placeholder="Estimated Closing Costs" type="number"/></div></div><button onclick="calculateOffer()">Calculate Offer</button><p>Your Max Allowable Offer: <strong id="calcResult">$0</strong></p></div><div class="card"><h2>Assignment Fee / JV Calculator</h2><div class="flex"><div><input id="assignContractPrice" placeholder="Contract Price" type="number"/></div><div><input id="assignEndBuyerPrice" placeholder="End Buyer Price" type="number"/></div><div><input id="assignJVPercent" placeholder="JV Split %" type="number"/></div></div><button onclick="calculateAssignment()">Calculate</button><p>Assignment Fee: <strong id="assignFee">$0</strong></p><p>Your JV Share: <strong id="assignJVShare">$0</strong></p></div><div class="card"><h2>IRS Set-Aside Calculator (Per Deal Profit)</h2><div class="flex"><div><input id="irsProfit" placeholder="Deal Profit" type="number"/></div><div><input id="irsRate" placeholder="Tax % to set aside (example: 25)" type="number"/></div></div><button onclick="calculateIRSSetAside()">Calculate IRS Set-Aside</button><p>Estimated IRS Set-Aside: <strong id="irsResult">$0</strong></p></div></div><div class="section" id="followups"><div class="card"><h2>Follow-Up Reminders &amp; Tasks</h2><table id="followupsTable"><thead><tr><th>Name</th><th>Type</th><th>Phone</th><th>Email</th><th>Follow-Up Date</th><th>Task</th><th>Notes</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="templates"><div class="card"><h2>SMS &amp; Email Templates</h2><div class="flex"><div><h3>Add Template</h3><input id="templateName" placeholder="Template Name"/><select id="templateType"><option value="sms">SMS</option><option value="email">Email</option></select><textarea id="templateBody" placeholder="Template Message"></textarea><button onclick="addTemplate()">Save Template</button></div><div><h3>Saved Templates</h3><table id="templatesTable"><thead><tr><th>Name</th><th>Type</th><th>Preview</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div></div></div><div class="section" id="marketing"><div class="card"><h2>Marketing Tools</h2><h3>📬 Postcard Generator</h3><input accept="image/*" id="postcardImage" onchange="previewMarketingImage('postcardImage','postcardPreview')" type="file"/><img class="image-preview" id="postcardPreview"/><button class="secondary" onclick="deleteMarketingImage('postcardImage','postcardPreview')">Delete Image</button><textarea id="postcardMessage" placeholder="Enter postcard message"></textarea><button onclick="generatePostcard()">Generate Postcard</button><button class="secondary" onclick="downloadMarketingDoc('postcardOutput','Postcard.html','postcardPreview')">Download Postcard</button><button class="danger" onclick="clearOutput('postcardOutput')">Delete Message</button><pre id="postcardOutput"></pre><h3>📧 Buyer Packet Email Generator</h3><input accept="image/*" id="packetImage" onchange="previewMarketingImage('packetImage','packetPreview')" type="file"/><img class="image-preview" id="packetPreview"/><button class="secondary" onclick="deleteMarketingImage('packetImage','packetPreview')">Delete Image</button><input id="packetAddress" placeholder="Property Address"/><input id="packetPrice" placeholder="Price" type="number"/><input id="packetARV" placeholder="ARV" type="number"/><textarea id="packetNotes" placeholder="Deal Notes"></textarea><button onclick="generateBuyerPacket()">Generate Buyer Packet</button><button class="secondary" onclick="downloadMarketingDoc('packetOutput','Buyer_Packet.html','packetPreview')">Download Buyer Packet</button><button class="danger" onclick="clearOutput('packetOutput')">Delete Message</button><pre id="packetOutput"></pre><h3>📄 Deal Flyer Generator</h3><input accept="image/*" id="flyerImage" onchange="previewMarketingImage('flyerImage','flyerPreview')" type="file"/><img class="image-preview" id="flyerPreview"/><button class="secondary" onclick="deleteMarketingImage('flyerImage','flyerPreview')">Delete Image</button><input id="flyerAddress" placeholder="Property Address"/><input id="flyerPrice" placeholder="Price" type="number"/><input id="flyerARV" placeholder="ARV" type="number"/><textarea id="flyerNotes" placeholder="Deal Notes"></textarea><button onclick="generateFlyer()">Generate Flyer</button><button class="secondary" onclick="downloadText('flyerOutput','Deal_Flyer.txt')">Download Flyer</button><button class="danger" onclick="clearOutput('flyerOutput')">Delete Message</button><pre id="flyerOutput"></pre><h3>🏗 Permit Lead Entry (Manual)</h3><input id="permitOwner" placeholder="Owner Name"/><input id="permitAddress" placeholder="Property Address"/><input id="permitType" placeholder="Permit Type"/><input id="permitValue" placeholder="Permit Value"/><input id="permitPulledBy" placeholder="Pulled By (Your Name)"/><input id="permitDate" type="date"/><textarea id="permitNotes" placeholder="Notes"></textarea><button onclick="addPermitLead()">Add Permit Lead</button><h3>Permit Leads List</h3><table id="permitTable"><thead><tr><th>Owner</th><th>Address</th><th>Type</th><th>Value</th><th>Pulled By</th><th>Date</th><th>Notes</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="contracts"><div class="card"><h2>Contracts &amp; Deal Packet</h2><div class="flex"><div><h3>Select Seller</h3><select id="contractSellerSelect"></select></div><div><h3>Select Buyer (Assignment)</h3><select id="contractBuyerSelect"></select></div></div><div class="contract-actions"><button onclick="openHelloSign()">Send with HelloSign</button><button onclick="downloadContract('contractVacantLand','Vacant_Land_Contract.txt')">Download Vacant Land Contract</button><button onclick="downloadContract('contractResidential','Residential_Contract.txt')">Download Residential Contract</button><button onclick="downloadContract('contractAssignment','Assignment_Contract.txt')">Download Assignment Contract</button><button onclick="downloadContract('contractClosingSheet','Closing_Sheet.txt')">Download Closing Sheet</button></div><div class="contract-box" id="contractVacantLand"></div><div class="contract-box" id="contractResidential"></div><div class="contract-box" id="contractAssignment"></div><div class="contract-box" id="contractClosingSheet"></div></div><div class="card"><h2>My Uploads (Contracts &amp; Closing Detail Sheet)</h2><input accept=".txt,.text,.md,.html" id="myDocFile" type="file"/><select id="myDocCategory"><option value="Contract">Contract</option><option value="Closing Detail Sheet">Closing Detail Sheet</option></select><button onclick="uploadMyDoc()">Upload</button><table id="myDocsTable"><thead><tr><th>Name</th><th>Category</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="importExport"><div class="card"><h2>Import Leads (CSV from PropWire, Zillow, Courthouse, etc.)</h2><input accept=".csv" id="csvFileInput" type="file"/><select id="importType"><option value="buyers">Import as Buyers</option><option value="sellers">Import as Sellers</option></select><button onclick="importCSV()">Upload CSV</button><p>CSV should include headers like: name, email, phone, type, city, state, address, zip, price, lot_size, zoning, utilities</p></div><div class="card"><h2>Export Data</h2><button onclick="exportBuyers()">Export Buyers CSV</button><button onclick="exportSellers()">Export Sellers CSV</button><button onclick="exportTitleCompanies()">Export Title Companies CSV</button></div></div></div></div><div class="modal" id="followUpModal"><div class="modal-content"><h3>Follow-Up Reminder</h3><p id="followUpMessage"></p><button onclick="closeFollowUpModal()">Close</button></div></div><div class="modal" id="docEditModal"><div class="modal-content"><h3>Edit Uploaded Document</h3><p><strong id="docEditTitle"></strong></p><textarea id="docEditBody" style="min-height:280px;"></textarea><div class="flex"><div><button onclick="saveDocEdit()">Save</button></div><div><button class="secondary" onclick="closeDocEditModal()">Cancel</button></div></div></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Lessie Bea CRM 🐝</title><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/><style>body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #ffd1dc, #ffffff); color: #000; margin: 0; padding: 0; } h1, h2, h3 { color: #e91e63; } .container { max-width: 1400px; margin: auto; padding: 20px; } .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; } .nav button { background: #ff69b4; border: none; color: #000; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; } .nav button.active { background: #ff1493; color: #fff; } .section { display: none; } .section.active { display: block; } .card { background: #fff0f5; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ffb6c1; } input, select, textarea, button { padding: 8px; margin: 5px 0; border-radius: 6px; border: 1px solid #ffb6c1; width: 100%; } button { background: #ff69b4; color: #000; font-weight: bold; cursor: pointer; } button.secondary { background: #ffb6c1; } button.danger { background: #e91e63; color: #fff; } table { width: 100%; border-collapse: collapse; margin-top: 10px; } th, td { border: 1px solid #ffb6c1; padding: 6px; font-size: 14px; } th { background: #ffe4e1; } .map-container { height: 400px; border-radius: 10px; overflow: hidden; } .badge { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; } .badge.new { background: #ffb6c1; } .badge.uc { background: #ffc0cb; } .badge.closed { background: #ff69b4; color: #fff; } .login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; } .login-box { background: #fff0f5; padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; border: 1px solid #ffb6c1; } .hidden { display: none; } .flex { display: flex; gap: 10px; flex-wrap: wrap; } .flex > div { flex: 1 1 200px; } .contract-box { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 10px; white-space: pre-wrap; color: #000; border: 1px solid #ffb6c1; } .contract-actions { margin-bottom: 10px; } .pipeline { display: flex; gap: 10px; overflow-x: auto; } .pipeline-column { background: #fff0f5; border-radius: 10px; padding: 10px; min-width: 220px; border: 1px solid #ffb6c1; } .pipeline-column h3 { text-align: center; } .pipeline-card { background: #ffe4e1; border-radius: 8px; padding: 8px; margin-bottom: 8px; font-size: 13px; } .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 999; } .modal-content { background: #fff0f5; padding: 20px; border-radius: 10px; max-width: 700px; width: 100%; border: 1px solid #ffb6c1; } .kpi-buttons button { margin-top: 5px; } .kpi-buttons { display:flex; gap:6px; flex-wrap:wrap; } .image-preview { max-width: 120px; max-height: 120px; border-radius: 8px; border: 1px solid #ffb6c1; display:block; margin-top:6px;} .streetview-btn { background:#ff1493; color:#fff; margin-top:5px; } .match-results { background:#fff; border:1px solid #ffb6c1; border-radius:8px; padding:10px; margin-top:10px; } #buyersByLocation { font-size: 18px; } .hot-btn { background:#ff1493; color:#fff; } .saved-search { border:1px solid #ffb6c1; padding:8px; border-radius:6px; margin-bottom:8px; background:#fff; }</style></head><body><div class="login-screen" id="loginScreen"><div class="login-box"><h2>Login</h2><input id="loginUser" placeholder="Username" type="text"/><input id="loginPass" placeholder="Password" type="password"/><button onclick="login()">Login</button><p id="loginError" style="color:#e91e63;"></p></div></div><div class="hidden" id="app"><div class="container"><h1>Lessie Bea CRM 🐝</h1><div class="nav"><button class="active" onclick="showSection('dashboard')">Dashboard</button><button onclick="showSection('buyers')">Buyers</button><button onclick="showSection('sellers')">Sellers / Deals</button><button onclick="showSection('pipeline')">Deal Pipeline</button><button onclick="showSection('portfolio')">Portfolio</button><button onclick="showSection('titleCompanies')">Title Companies</button><button onclick="showSection('map')">Buyer &amp; Seller Map</button><button onclick="showSection('decisionTool')">Decision Tool</button><button onclick="showSection('calculators')">Calculators</button><button onclick="showSection('followups')">Follow-Ups</button><button onclick="showSection('templates')">SMS &amp; Email Templates</button><button onclick="showSection('marketing')">Marketing Tools</button><button onclick="showSection('contracts')">Contracts &amp; Deal Packet</button><button onclick="showSection('importExport')">Import / Export</button></div><div class="section active" id="dashboard"><div class="card"><h2>Dashboard</h2><div class="flex"><div>Total Buyers: <strong id="totalBuyers">0</strong></div><div>Total Sellers / Deals: <strong id="totalSellers">0</strong></div><div>Total Title Companies: <strong id="totalTitleCompanies">0</strong></div><div>Total Matches: <strong id="totalMatches">0</strong></div><div>Total Profit: <strong id="totalProfit">$0</strong></div><div>Driving for Dollars Leads: <strong id="totalDFD">0</strong></div></div></div><div class="card"><h2>📍 Buyers by Location</h2><pre id="buyersByLocation"></pre></div><div class="card"><h2>📊 KPI Tracker</h2><div class="flex"><div><h3>📞 Calls</h3><p>Calls Today: <strong id="callsToday">0</strong></p><p>Calls This Week: <strong id="callsWeek">0</strong></p><p>Calls This Month: <strong id="callsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('calls')">+ Log Call</button><button class="secondary" onclick="removeKPI('calls')">- Remove Call</button></div></div><div><h3>📩 Texts</h3><p>Texts Today: <strong id="textsToday">0</strong></p><p>Texts This Week: <strong id="textsWeek">0</strong></p><p>Texts This Month: <strong id="textsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('texts')">+ Log Text</button><button class="secondary" onclick="removeKPI('texts')">- Remove Text</button></div></div><div><h3>📧 Emails</h3><p>Emails Today: <strong id="emailsToday">0</strong></p><p>Emails This Week: <strong id="emailsWeek">0</strong></p><p>Emails This Month: <strong id="emailsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('emails')">+ Log Email</button><button class="secondary" onclick="removeKPI('emails')">- Remove Email</button></div></div></div><div class="flex"><div><h3>🏠 Sellers</h3><p>Sellers Today: <strong id="sellersToday">0</strong></p><p>Sellers This Week: <strong id="sellersWeek">0</strong></p><p>Sellers This Month: <strong id="sellersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('sellers')">+ Log Seller</button><button class="secondary" onclick="removeKPI('sellers')">- Remove Seller</button></div></div><div><h3>👥 Buyers</h3><p>Buyers Today: <strong id="buyersToday">0</strong></p><p>Buyers This Week: <strong id="buyersWeek">0</strong></p><p>Buyers This Month: <strong id="buyersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('buyers')">+ Log Buyer</button><button class="secondary" onclick="removeKPI('buyers')">- Remove Buyer</button></div></div><div><h3>🧑‍💼 Agents</h3><p>Agents Today: <strong id="agentsToday">0</strong></p><p>Agents This Week: <strong id="agentsWeek">0</strong></p><p>Agents This Month: <strong id="agentsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('agents')">+ Log Agent</button><button class="secondary" onclick="removeKPI('agents')">- Remove Agent</button></div></div><div><h3>📬 Direct Mail</h3><p>Mail Today: <strong id="directMailToday">0</strong></p><p>Mail This Week: <strong id="directMailWeek">0</strong></p><p>Mail This Month: <strong id="directMailMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('directMail')">+ Log Mail Sent</button><button class="secondary" onclick="removeKPI('directMail')">- Remove Mail</button></div></div></div></div></div><div class="section" id="buyers"><div class="card"><h2>Add Buyer</h2><div class="flex"><div><input id="buyerName" placeholder="Name"/></div><div><input id="buyerEmail" placeholder="Email"/></div><div><input id="buyerPhone" placeholder="Phone"/></div><div><select id="buyerContactType"><option>Regular</option><option>Active Buyer</option><option>Agent</option></select></div><div><select id="buyerType"><option>Single Family</option><option>Vacant Land</option><option>Commercial</option><option>Multi-Family</option><option>Alternative</option></select></div><div><input id="buyerCity" placeholder="City"/></div><div><input id="buyerCounty" placeholder="County"/></div><div><select id="buyerState"></select></div><div><input id="buyerMinPrice" placeholder="Min Price" type="number"/></div><div><input id="buyerMaxPrice" placeholder="Max Price" type="number"/></div><div><input id="buyerMinLot" placeholder="Min Lot (acres)" step="0.01" type="number"/></div><div><input id="buyerMaxLot" placeholder="Max Lot (acres)" step="0.01" type="number"/></div><div><input id="buyerZoning" placeholder="Zoning Preference"/></div><div><input id="buyerUtilities" placeholder="Utilities Requirement"/></div><div><input id="buyerAddress" placeholder="Street Address (optional for map)"/></div><div><input id="buyerZip" placeholder="ZIP Code (for map)"/></div><div><input id="buyerLat" placeholder="Latitude (optional)" step="0.000001" type="number"/></div><div><input id="buyerLng" placeholder="Longitude (optional)" step="0.000001" type="number"/></div><div><input id="buyerFollowUpDate" type="date"/></div><div><textarea id="buyerNotes" placeholder="Notes"></textarea></div><div><select id="hotMarketDropdown"><option value="">Select Hot Market</option></select></div><div><button class="hot-btn" onclick="addHotMarket()">Add Hot Market</button></div></div><button onclick="addBuyer()">Add Buyer</button></div><div class="card"><h2>Buyers List</h2><input id="buyerSearch" oninput="filterBuyers()" placeholder="Search buyer..."/><table id="buyersTable"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Contact Type</th><th>Type</th><th>City</th><th>County</th><th>State</th><th>Min Price</th><th>Max Price</th><th>Min Lot</th><th>Max Lot</th><th>Follow-Up</th><th>Notes</th><th>Skip Trace</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="sellers"><div class="card"><h2>Add Seller / Deal</h2><div class="flex"><div><input id="sellerName" placeholder="Seller Name"/></div><div><input id="sellerEmail" placeholder="Email"/></div><div><input id="sellerPhone" placeholder="Phone"/></div><div><select id="sellerType"><option>Single Family</option><option>Vacant Land</option><option>Commercial</option><option>Multi-Family</option></select></div><div><input id="sellerCity" placeholder="City"/></div><div><select id="sellerState"></select></div><div><input id="sellerAddress" placeholder="Street Address"/></div><div><input id="sellerZip" placeholder="ZIP Code"/></div><div><input id="sellerLat" placeholder="Latitude (optional)" step="0.000001" type="number"/></div><div><input id="sellerLng" placeholder="Longitude (optional)" step="0.000001" type="number"/></div><div><input id="sellerAPN" placeholder="APN / Parcel Number"/></div><div><input id="sellerAskingPrice" placeholder="Asking Price" type="number"/></div><div><input id="sellerLotSize" placeholder="Lot Size (acres)" step="0.01" type="number"/></div><div><input id="sellerZoning" placeholder="Zoning"/></div><div><input id="sellerUtilities" placeholder="Utilities"/></div><div><input id="sellerARV" placeholder="ARV" type="number"/></div><div><input id="sellerRepairs" placeholder="Repairs" type="number"/></div><div><input id="sellerOffer" placeholder="Your Offer" type="number"/></div><div><input id="sellerJVSplit" placeholder="JV Split %" type="number"/></div><div><input id="sellerEMD" placeholder="Earnest Money Deposit" type="number"/></div><div><input id="sellerClosingDate" placeholder="Closing Date" type="date"/></div><div><input id="sellerTitleCompany" placeholder="Title / Escrow Company"/></div><div><select id="sellerMotivation"><option value="Motivated">Motivated Seller</option><option value="Non Motivated">Non Motivated Seller</option></select></div><div><select id="sellerStatus"><option value="New">New Lead</option><option value="Contacted">Contacted</option><option value="Negotiating">Negotiating</option><option value="Under Contract">Under Contract</option><option value="Marketing">Marketing</option><option value="Closed">Closed</option><option value="Dead">Dead</option></select></div><div><select id="sellerSource"><option value="Direct">Direct</option><option value="Driving for Dollars">Driving for Dollars</option><option value="Cold Call">Cold Call</option><option value="Text">Text</option><option value="Referral">Referral</option></select></div><div><textarea id="sellerNotes" placeholder="Notes"></textarea></div><div><input id="sellerFollowUpDate" type="date"/></div><div><input id="sellerTask" placeholder="Task"/></div><div><input accept="image/*" id="sellerImage" onchange="previewSellerImage()" type="file"/><img class="image-preview" id="sellerImagePreview"/><button class="secondary" onclick="deleteSellerImage()">Delete Image</button></div></div><button onclick="addSeller()">Add Seller</button></div><div class="card"><h2>Sellers / Deals List</h2><table id="sellersTable"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>City</th><th>State</th><th>Status</th><th>Source</th><th>Asking</th><th>Offer</th><th>ARV</th><th>Repairs</th><th>JV %</th><th>APN</th><th>EMD</th><th>Closing</th><th>Title</th><th>Motivation</th><th>Task</th><th>Notes</th><th>Follow-Up</th><th>Skip Trace</th><th>Actions</th></tr></thead><tbody></tbody></table></div><div class="card"><h2>🔍 Seller Match Search</h2><div class="flex"><div><input id="matchCity" placeholder="City"/></div><div><input id="matchCounty" placeholder="County"/></div><div><select id="matchState"></select></div><div><input id="matchType" placeholder="Property Type"/></div><div><input id="matchZoning" placeholder="Zoning"/></div><div><input id="matchUtilities" placeholder="Utilities"/></div><div><input id="matchMinPrice" placeholder="Min Price" type="number"/></div><div><input id="matchMaxPrice" placeholder="Max Price" type="number"/></div><div><input id="matchMinLot" placeholder="Min Lot (acres)" step="0.01" type="number"/></div><div><input id="matchMaxLot" placeholder="Max Lot (acres)" step="0.01" type="number"/></div></div><button onclick="runSellerMatchSearch()">Search Buyers</button><div id="savedSearches"></div><div class="match-results" id="matchResults"></div></div></div><div class="section" id="pipeline"><div class="card"><h2>Deal Pipeline</h2><div class="pipeline" id="pipelineContainer"></div></div></div><div class="section" id="portfolio"><div class="card"><h2>📂 Closed Deals Portfolio</h2><table id="portfolioTable"><thead><tr><th>Seller</th><th>Address</th><th>City</th><th>State</th><th>Purchase Price</th><th>End Buyer Price</th><th>Profit</th><th>Date Closed</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="titleCompanies"><div class="card"><h2>Add Title Company</h2><div class="flex"><div><input id="titleName" placeholder="Company Name"/></div><div><input id="titleEmail" placeholder="Email"/></div><div><input id="titlePhone" placeholder="Phone"/></div><div><input id="titleCity" placeholder="City"/></div><div><select id="titleState"></select></div><div><input id="titleAddress" placeholder="Address"/></div></div><button onclick="addTitleCompany()">Add Title Company</button></div><div class="card"><h2>Title Companies List</h2><table id="titleCompaniesTable"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>State</th><th>Address</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="map"><div class="card"><h2>Buyer &amp; Seller Map (Drive for Dollars Ready)</h2><div class="map-container" id="mapContainer"></div><p style="margin-top:10px;">Buyers = Blue pins, Sellers = Red pins. Click pin for details or Street View.</p></div></div>
+
+<!-- ===================== DECISION TOOL (NEW PAGE ONLY) ===================== -->
+<div class="section" id="decisionTool">
+  <div class="card">
+    <h2>Decision Tool (Deal Breakdown)</h2>
+    <p style="margin-top:-6px;">Enter the property info and click <strong>Analyze</strong> to get: deal type, offer range, and matched buyers from your CRM.</p>
+    <div class="flex">
+      <div><input id="dtAddress" placeholder="Property Address (example: 20690 W McKinney Ave)"/></div>
+      <div><input id="dtCity" placeholder="City"/></div>
+      <div>
+        <select id="dtState"></select>
+      </div>
+      <div>
+        <select id="dtPropertyType">
+          <option value="Vacant Land">Vacant Land</option>
+          <option value="Single Family">Single Family</option>
+          <option value="Commercial">Commercial</option>
+          <option value="Multi-Family">Multi-Family</option>
+        </select>
+      </div>
+      <div>
+        <select id="dtCondition">
+          <option value="Unknown">Condition (choose)</option>
+          <option value="Clean">Clean / Buildable</option>
+          <option value="Needs Work">Needs Work / Rehab</option>
+          <option value="Vacant">Vacant</option>
+          <option value="Boarded">Boarded / Distressed</option>
+          <option value="Teardown">Teardown</option>
+        </select>
+      </div>
+      <div><input id="dtLotAcres" placeholder="Lot Size (acres) (example: 0.10)" step="0.01" type="number"/></div>
+      <div><input id="dtSqFt" placeholder="Structure Sq Ft (if house) (example: 572)" type="number"/></div>
+      <div><input id="dtCleanLotValue" placeholder="Clean Lot Value $ (optional override)" type="number"/></div>
+      <div><input id="dtDemoCost" placeholder="Demo Cost $ (optional override)" type="number"/></div>
+      <div><input id="dtTargetProfit" placeholder="Your Target Assignment Fee $ (optional)" type="number"/></div>
+    </div>
+    <div class="flex">
+      <div><button onclick="analyzeDecisionTool()">Analyze</button></div>
+      <div><button class="secondary" onclick="copyDecisionSummary()">Copy Summary</button></div>
+      <div><button class="secondary" onclick="sendDecisionToSellerForm()">Send to Sellers/Deals</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Analysis</h2>
+    <div class="contract-box" id="dtOutput" style="min-height:160px;"></div>
+  </div>
+
+  <div class="card">
+    <h2>Matched Buyers (from your Buyers list)</h2>
+    <div class="match-results" id="dtBuyerMatches"></div>
+  </div>
+</div>
+<!-- ===================== /DECISION TOOL ===================== -->
+
+<div class="section" id="calculators"><div class="card"><h2>Offer Calculator (70% Rule + Repairs)</h2><div class="flex"><div><input id="calcARV" placeholder="ARV" type="number"/></div><div><input id="calcRepairs" placeholder="Repairs" type="number"/></div><div><input id="calcClosingCosts" placeholder="Estimated Closing Costs" type="number"/></div></div><button onclick="calculateOffer()">Calculate Offer</button><p>Your Max Allowable Offer: <strong id="calcResult">$0</strong></p></div><div class="card"><h2>Assignment Fee / JV Calculator</h2><div class="flex"><div><input id="assignContractPrice" placeholder="Contract Price" type="number"/></div><div><input id="assignEndBuyerPrice" placeholder="End Buyer Price" type="number"/></div><div><input id="assignJVPercent" placeholder="JV Split %" type="number"/></div></div><button onclick="calculateAssignment()">Calculate</button><p>Assignment Fee: <strong id="assignFee">$0</strong></p><p>Your JV Share: <strong id="assignJVShare">$0</strong></p></div><div class="card"><h2>IRS Set-Aside Calculator (Per Deal Profit)</h2><div class="flex"><div><input id="irsProfit" placeholder="Deal Profit" type="number"/></div><div><input id="irsRate" placeholder="Tax % to set aside (example: 25)" type="number"/></div></div><button onclick="calculateIRSSetAside()">Calculate IRS Set-Aside</button><p>Estimated IRS Set-Aside: <strong id="irsResult">$0</strong></p></div></div><div class="section" id="followups"><div class="card"><h2>Follow-Up Reminders &amp; Tasks</h2><table id="followupsTable"><thead><tr><th>Name</th><th>Type</th><th>Phone</th><th>Email</th><th>Follow-Up Date</th><th>Task</th><th>Notes</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="templates"><div class="card"><h2>SMS &amp; Email Templates</h2><div class="flex"><div><h3>Add Template</h3><input id="templateName" placeholder="Template Name"/><select id="templateType"><option value="sms">SMS</option><option value="email">Email</option></select><textarea id="templateBody" placeholder="Template Message"></textarea><button onclick="addTemplate()">Save Template</button></div><div><h3>Saved Templates</h3><table id="templatesTable"><thead><tr><th>Name</th><th>Type</th><th>Preview</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div></div></div><div class="section" id="marketing"><div class="card"><h2>Marketing Tools</h2><h3>📬 Postcard Generator</h3><input accept="image/*" id="postcardImage" onchange="previewMarketingImage('postcardImage','postcardPreview')" type="file"/><img class="image-preview" id="postcardPreview"/><button class="secondary" onclick="deleteMarketingImage('postcardImage','postcardPreview')">Delete Image</button><textarea id="postcardMessage" placeholder="Enter postcard message"></textarea><button onclick="generatePostcard()">Generate Postcard</button><button class="secondary" onclick="downloadMarketingDoc('postcardOutput','Postcard.html','postcardPreview')">Download Postcard</button><button class="danger" onclick="clearOutput('postcardOutput')">Delete Message</button><pre id="postcardOutput"></pre><h3>📧 Buyer Packet Email Generator</h3><input accept="image/*" id="packetImage" onchange="previewMarketingImage('packetImage','packetPreview')" type="file"/><img class="image-preview" id="packetPreview"/><button class="secondary" onclick="deleteMarketingImage('packetImage','packetPreview')">Delete Image</button><input id="packetAddress" placeholder="Property Address"/><input id="packetPrice" placeholder="Price" type="number"/><input id="packetARV" placeholder="ARV" type="number"/><textarea id="packetNotes" placeholder="Deal Notes"></textarea><button onclick="generateBuyerPacket()">Generate Buyer Packet</button><button class="secondary" onclick="downloadMarketingDoc('packetOutput','Buyer_Packet.html','packetPreview')">Download Buyer Packet</button><button class="danger" onclick="clearOutput('packetOutput')">Delete Message</button><pre id="packetOutput"></pre><h3>📄 Deal Flyer Generator</h3><input accept="image/*" id="flyerImage" onchange="previewMarketingImage('flyerImage','flyerPreview')" type="file"/><img class="image-preview" id="flyerPreview"/><button class="secondary" onclick="deleteMarketingImage('flyerImage','flyerPreview')">Delete Image</button><input id="flyerAddress" placeholder="Property Address"/><input id="flyerPrice" placeholder="Price" type="number"/><input id="flyerARV" placeholder="ARV" type="number"/><textarea id="flyerNotes" placeholder="Deal Notes"></textarea><button onclick="generateFlyer()">Generate Flyer</button><button class="secondary" onclick="downloadText('flyerOutput','Deal_Flyer.txt')">Download Flyer</button><button class="danger" onclick="clearOutput('flyerOutput')">Delete Message</button><pre id="flyerOutput"></pre><h3>🏗 Permit Lead Entry (Manual)</h3><input id="permitOwner" placeholder="Owner Name"/><input id="permitAddress" placeholder="Property Address"/><input id="permitType" placeholder="Permit Type"/><input id="permitValue" placeholder="Permit Value"/><input id="permitPulledBy" placeholder="Pulled By (Your Name)"/><input id="permitDate" type="date"/><textarea id="permitNotes" placeholder="Notes"></textarea><button onclick="addPermitLead()">Add Permit Lead</button><h3>Permit Leads List</h3><table id="permitTable"><thead><tr><th>Owner</th><th>Address</th><th>Type</th><th>Value</th><th>Pulled By</th><th>Date</th><th>Notes</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="contracts"><div class="card"><h2>Contracts &amp; Deal Packet</h2><div class="flex"><div><h3>Select Seller</h3><select id="contractSellerSelect"></select></div><div><h3>Select Buyer (Assignment)</h3><select id="contractBuyerSelect"></select></div></div><div class="contract-actions"><button onclick="openHelloSign()">Send with HelloSign</button><button onclick="downloadContract('contractVacantLand','Vacant_Land_Contract.txt')">Download Vacant Land Contract</button><button onclick="downloadContract('contractResidential','Residential_Contract.txt')">Download Residential Contract</button><button onclick="downloadContract('contractAssignment','Assignment_Contract.txt')">Download Assignment Contract</button><button onclick="downloadContract('contractClosingSheet','Closing_Sheet.txt')">Download Closing Sheet</button></div><div class="contract-box" id="contractVacantLand"></div><div class="contract-box" id="contractResidential"></div><div class="contract-box" id="contractAssignment"></div><div class="contract-box" id="contractClosingSheet"></div></div><div class="card"><h2>My Uploads (Contracts &amp; Closing Detail Sheet)</h2><input accept=".txt,.text,.md,.html" id="myDocFile" type="file"/><select id="myDocCategory"><option value="Contract">Contract</option><option value="Closing Detail Sheet">Closing Detail Sheet</option></select><button onclick="uploadMyDoc()">Upload</button><table id="myDocsTable"><thead><tr><th>Name</th><th>Category</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="importExport"><div class="card"><h2>Import Leads (CSV from PropWire, Zillow, Courthouse, etc.)</h2><input accept=".csv" id="csvFileInput" type="file"/><select id="importType"><option value="buyers">Import as Buyers</option><option value="sellers">Import as Sellers</option></select><button onclick="importCSV()">Upload CSV</button><p>CSV should include headers like: name, email, phone, type, city, state, address, zip, price, lot_size, zoning, utilities</p></div><div class="card"><h2>Export Data</h2><button onclick="exportBuyers()">Export Buyers CSV</button><button onclick="exportSellers()">Export Sellers CSV</button><button onclick="exportTitleCompanies()">Export Title Companies CSV</button></div></div></div></div><div class="modal" id="followUpModal"><div class="modal-content"><h3>Follow-Up Reminder</h3><p id="followUpMessage"></p><button onclick="closeFollowUpModal()">Close</button></div></div><div class="modal" id="docEditModal"><div class="modal-content"><h3>Edit Uploaded Document</h3><p><strong id="docEditTitle"></strong></p><textarea id="docEditBody" style="min-height:280px;"></textarea><div class="flex"><div><button onclick="saveDocEdit()">Save</button></div><div><button class="secondary" onclick="closeDocEditModal()">Cancel</button></div></div></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 // ---------------- LOGIN ----------------
 const LOGIN_USER = "Lessie";
 const LOGIN_PASS = "Lessieblinky1$@";
@@ -188,7 +244,7 @@ let editingDocId = null;
 // ---------------- STATES DROPDOWN ----------------
 const states = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
 function populateStates() {
-  const selects = ["buyerState","sellerState","titleState","matchState"];
+  const selects = ["buyerState","sellerState","titleState","matchState","dtState"];
   selects.forEach(id => {
     const sel = document.getElementById(id);
     if (!sel) return;
@@ -673,6 +729,280 @@ function deleteSavedSearch(id) {
   safeSetItem("savedSearches", JSON.stringify(savedSearches));
   renderSavedSearches();
 }
+
+// ---------------- DECISION TOOL (NEW LOGIC ONLY) ----------------
+function money(n) {
+  const x = parseFloat(n);
+  if (isNaN(x)) return "";
+  return "$" + x.toLocaleString(undefined, { maximumFractionDigits: 0 });
+}
+function clampNonNeg(n) {
+  const x = parseFloat(n);
+  if (isNaN(x)) return 0;
+  return Math.max(0, x);
+}
+function getDefaultCleanLotValue(state) {
+  // Conservative starter "clean infill lot" values (rule-based). You can override in the field.
+  if (state === "FL") return 20000;
+  if (state === "TX") return 60000;
+  if (state === "CA") return 150000;
+  return 30000;
+}
+function getDefaultDemoCost(state) {
+  // Small home demo typical starter; override if you know local bids.
+  if (state === "CA") return 15000;
+  if (state === "TX") return 9000;
+  if (state === "FL") return 8000;
+  return 9000;
+}
+function getBuffer(state) {
+  // Extra cushion so you don’t offer your max.
+  if (state === "CA") return 10000;
+  if (state === "TX") return 5000;
+  if (state === "FL") return 2000;
+  return 3000;
+}
+function decideDealType(propertyType, condition, sqFt) {
+  const sf = clampNonNeg(sqFt);
+  const cond = (condition || "").toLowerCase();
+
+  if ((propertyType || "").toLowerCase().includes("vacant")) return "Vacant Land (Infill)";
+
+  if (cond.includes("teardown") || cond.includes("boarded")) return "Teardown / Land Value Deal";
+
+  if (cond.includes("needs")) return "Rehab / Investor Deal";
+  if (cond.includes("vacant")) return "Vacant (Likely Investor Deal)";
+
+  // fallback by sq ft
+  if (sf > 0 && sf < 800) return "Small House (Possible Teardown)";
+  return "Standard Deal (Confirm Condition)";
+}
+function buyerMatchesDeal(buyer, deal) {
+  // Match by state (required)
+  if (deal.state && buyer.state !== deal.state) return false;
+
+  // Match by type (soft). If your buyers are strict, keep strict; if blank, allow.
+  const dealType = (deal.propertyType || "").toLowerCase();
+  const buyerType = (buyer.type || "").toLowerCase();
+  if (dealType && buyerType) {
+    if (dealType.includes("vacant") && !buyerType.includes("vacant")) return false;
+    if (dealType.includes("single") && !buyerType.includes("single")) return false;
+  }
+
+  // Match by city if buyer has city filled (optional)
+  if (buyer.city && deal.city) {
+    const bc = (buyer.city || "").trim().toLowerCase();
+    const dc = (deal.city || "").trim().toLowerCase();
+    if (bc && dc && bc !== dc) {
+      // If buyer has city set and it doesn't match, treat as not a match.
+      // (You can loosen this later to county/region.)
+      return false;
+    }
+  }
+
+  // Price overlap (optional)
+  const minP = clampNonNeg(buyer.minPrice);
+  const maxP = clampNonNeg(buyer.maxPrice);
+  const dealExit = clampNonNeg(deal.expectedBuilderPay);
+  if (minP && dealExit && dealExit < minP) return false;
+  if (maxP && dealExit && dealExit > maxP) return false;
+
+  // Lot overlap (optional)
+  const minL = parseFloat(buyer.minLot);
+  const maxL = parseFloat(buyer.maxLot);
+  const dealLot = parseFloat(deal.lotAcres);
+  if (!isNaN(dealLot)) {
+    if (!isNaN(minL) && dealLot < minL) return false;
+    if (!isNaN(maxL) && dealLot > maxL) return false;
+  }
+
+  return true;
+}
+
+function analyzeDecisionTool() {
+  const address = (document.getElementById("dtAddress").value || "").trim();
+  const city = (document.getElementById("dtCity").value || "").trim();
+  const state = (document.getElementById("dtState").value || "").trim();
+  const propertyType = (document.getElementById("dtPropertyType").value || "").trim();
+  const condition = (document.getElementById("dtCondition").value || "").trim();
+  const lotAcres = document.getElementById("dtLotAcres").value;
+  const sqFt = document.getElementById("dtSqFt").value;
+  const overrideClean = document.getElementById("dtCleanLotValue").value;
+  const overrideDemo = document.getElementById("dtDemoCost").value;
+  const targetProfit = clampNonNeg(document.getElementById("dtTargetProfit").value);
+
+  const dealType = decideDealType(propertyType, condition, sqFt);
+
+  const cleanLotValue = clampNonNeg(overrideClean) || getDefaultCleanLotValue(state);
+  const buffer = getBuffer(state);
+
+  const isTeardown = dealType.toLowerCase().includes("teardown");
+  const demoCost = (clampNonNeg(overrideDemo) || (isTeardown ? getDefaultDemoCost(state) : 0));
+
+  // "Net" land value after demo, for teardown math
+  const netLandValue = Math.max(0, cleanLotValue - (isTeardown ? demoCost : 0));
+
+  // Offer range
+  const offerHigh = Math.max(0, netLandValue - (isTeardown ? 0 : buffer)); // for clean land, buffer still applies; for teardown, net already includes demo
+  const offerLow = Math.max(0, offerHigh - buffer);
+  const maxOffer = Math.max(0, netLandValue); // hard cap = you’re paying full net land value (not recommended)
+
+  // What builder might pay you (as-is vs clean)
+  // As-is expected builder pay usually netLandValue +/- a little. We'll keep conservative.
+  const expectedBuilderPayLow = Math.max(0, netLandValue);
+  const expectedBuilderPayHigh = Math.max(0, netLandValue + buffer); // best case if competition / strong demand
+
+  // Suggested assignment ask price (what you market it to builders for)
+  const suggestedAskLow = Math.max(0, expectedBuilderPayLow + (targetProfit ? targetProfit : buffer));
+  const suggestedAskHigh = Math.max(0, expectedBuilderPayHigh + (targetProfit ? targetProfit : buffer));
+
+  const dt = {
+    address, city, state, propertyType, condition,
+    lotAcres, sqFt,
+    dealType,
+    cleanLotValue,
+    demoCost: (isTeardown ? demoCost : 0),
+    netLandValue,
+    offerLow, offerHigh, maxOffer,
+    expectedBuilderPay: expectedBuilderPayLow, // used for matching
+    expectedBuilderPayLow, expectedBuilderPayHigh,
+    suggestedAskLow, suggestedAskHigh,
+    buffer,
+    targetProfit
+  };
+
+  // Output
+  const lines = [];
+  lines.push(`PROPERTY`);
+  lines.push(`Address: ${address || "(enter address)"}`);
+  lines.push(`City/State: ${city || "(city)"} , ${state || "(state)"}`);
+  lines.push(`Type: ${propertyType || "(select type)"} | Condition: ${condition || "(select)"} | Lot: ${lotAcres || "?"} acres | SqFt: ${sqFt || "?"}`);
+  lines.push(``);
+  lines.push(`DEAL TYPE`);
+  lines.push(`${dt.dealType}`);
+  lines.push(``);
+  lines.push(`LAND VALUE MATH (rule-based starter, you can override)`);
+  lines.push(`Estimated Clean Lot Value: ${money(dt.cleanLotValue)}`);
+  lines.push(`Estimated Demo Cost: ${isTeardown ? money(dt.demoCost) : "$0"}`);
+  lines.push(`Net Land Value (Clean Lot - Demo): ${money(dt.netLandValue)}`);
+  lines.push(``);
+  lines.push(`RECOMMENDED OFFER RANGE`);
+  lines.push(`Offer (low): ${money(dt.offerLow)}`);
+  lines.push(`Offer (strong): ${money(dt.offerHigh)}`);
+  lines.push(`Max Offer (cap): ${money(dt.maxOffer)}`);
+  lines.push(``);
+  lines.push(`WHAT A BUILDER MAY PAY YOU`);
+  lines.push(`Builder price (low): ${money(dt.expectedBuilderPayLow)}`);
+  lines.push(`Builder price (high): ${money(dt.expectedBuilderPayHigh)}`);
+  lines.push(``);
+  lines.push(`SUGGESTED ASK (if wholesaling)`);
+  lines.push(`Market to builders (low): ${money(dt.suggestedAskLow)}`);
+  lines.push(`Market to builders (high): ${money(dt.suggestedAskHigh)}`);
+  lines.push(``);
+  lines.push(`NOTES`);
+  lines.push(`• These are conservative starter numbers based on your state. Override Clean Lot Value & Demo Cost if you have comps/bids.`);
+  lines.push(`• For best results: pull sold vacant lots within 0.5–1 mile and update Clean Lot Value.`);
+
+  document.getElementById("dtOutput").textContent = lines.join("\n");
+
+  // Buyer matches
+  renderDecisionBuyerMatches(dt);
+
+  // Save last decision for copy/send buttons
+  safeSetItem("lastDecisionTool", JSON.stringify(dt));
+}
+
+function renderDecisionBuyerMatches(dt) {
+  const container = document.getElementById("dtBuyerMatches");
+  const matches = buyers.filter(b => buyerMatchesDeal(b, {
+    state: dt.state,
+    city: dt.city,
+    propertyType: dt.propertyType,
+    lotAcres: dt.lotAcres,
+    expectedBuilderPay: dt.expectedBuilderPay
+  }));
+
+  if (matches.length === 0) {
+    container.innerHTML = "<p>No matching buyers found in your CRM (try removing city, or add more buyers for this market).</p>";
+    return;
+  }
+
+  container.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th><th>Phone</th><th>Email</th><th>Type</th>
+          <th>City</th><th>State</th><th>Price Range</th><th>Lot Range</th><th>Notes</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${matches.map(b => `
+          <tr>
+            <td>${b.name || ""}</td>
+            <td>${b.phone || ""}</td>
+            <td>${b.email || ""}</td>
+            <td>${b.type || ""}</td>
+            <td>${b.city || ""}</td>
+            <td>${b.state || ""}</td>
+            <td>${(b.minPrice || "?")} - ${(b.maxPrice || "?")}</td>
+            <td>${(b.minLot || "?")} - ${(b.maxLot || "?")}</td>
+            <td>${(b.notes || "").substring(0, 60)}${(b.notes || "").length > 60 ? "..." : ""}</td>
+            <td style="white-space:nowrap;">
+              <button class="secondary" onclick="callPerson('${b.phone || ""}')">Call</button>
+              <button class="secondary" onclick="sendSMS('${b.phone || ""}')">SMS</button>
+              <button class="secondary" onclick="sendEmail('${b.email || ""}')">Email</button>
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function copyDecisionSummary() {
+  const txt = (document.getElementById("dtOutput").textContent || "").trim();
+  if (!txt) {
+    alert("Nothing to copy yet. Click Analyze first.");
+    return;
+  }
+  navigator.clipboard.writeText(txt).then(() => {
+    alert("Copied!");
+  }).catch(() => {
+    alert("Copy failed. You can manually select and copy the text in the box.");
+  });
+}
+
+function sendDecisionToSellerForm() {
+  const raw = localStorage.getItem("lastDecisionTool");
+  if (!raw) {
+    alert("Analyze a deal first.");
+    return;
+  }
+  let dt = null;
+  try { dt = JSON.parse(raw); } catch(e) {}
+  if (!dt) {
+    alert("Analyze a deal first.");
+    return;
+  }
+
+  // Fill existing Seller form fields (no layout changes)
+  sellerName.value = sellerName.value || ""; // leave seller name blank unless user typed it
+  sellerType.value = dt.propertyType || "Vacant Land";
+  sellerCity.value = dt.city || "";
+  sellerState.value = dt.state || "FL";
+  sellerAddress.value = dt.address || "";
+  sellerLotSize.value = dt.lotAcres || "";
+  sellerOffer.value = dt.offerHigh || "";
+  sellerNotes.value = (sellerNotes.value ? (sellerNotes.value + "\n\n") : "") + (document.getElementById("dtOutput").textContent || "");
+  sellerSource.value = "Direct";
+  sellerStatus.value = "New";
+
+  // Move user to Sellers page
+  showSection("sellers");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+// ---------------- /DECISION TOOL ----------------
+
 
 // ---------------- PIPELINE ----------------
 function renderPipeline() {
