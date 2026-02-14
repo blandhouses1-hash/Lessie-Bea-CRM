@@ -370,24 +370,7 @@ function pruneStorage() {
   } catch(e) {}
 }
 
-function login() {
-  const user = document.getElementById("loginUser").value;
-  const pass = document.getElementById("loginPass").value;
-  if (user === LOGIN_USER && pass === LOGIN_PASS) {
-    safeSetItem("crmLoggedIn", "true");
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("app").classList.remove("hidden");
-    initApp();
-  } else {
-    document.getElementById("loginError").innerText = "Invalid username or password.";
-  }
-}
 
-if (localStorage.getItem("crmLoggedIn") === "true") {
-  document.getElementById("loginScreen").style.display = "none";
-  document.getElementById("app").classList.remove("hidden");
-  window.onload = () => initApp();
-}
 
 // ---------------- KPI STORAGE ----------------
 let kpi = JSON.parse(localStorage.getItem("kpi")) || {
