@@ -1513,11 +1513,24 @@ function openStreetView(lat, lng) {
   const url = `https://www.google.com/maps?q=&layer=c&cbll=${lat},${lng}`;
   window.open(url, "_blank");
 }
+/* ===== STEP 1: ADDRESS LOOKUP (PASTE HERE) ===== */
+async function getAddressFromLatLng(lat, lng) {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+    );
+    const data = await res.json();
+    return data.display_name || "Address not found";
+  } catch (e) {
+    return "Address lookup failed";
+  }
+}
+/* ===== END STEP 1 ===== */
 /* ===== STEP B STARTS HERE ===== */
 
 let d4dTempMarker = null;
 
-function openD4DChooser(lat, lng) {
+async function openD4DChooser(lat, lng) {
   if (d4dTempMarker) {
     try { map.removeLayer(d4dTempMarker); } catch(e) {}
     d4dTempMarker = null;
@@ -1525,21 +1538,34 @@ function openD4DChooser(lat, lng) {
 
   d4dTempMarker = L.marker([lat, lng]).addTo(map);
 
-  const html = `
-    <div style="min-width:200px;">
-      <strong>D4D Lead?</strong><br>
-      Lat: ${Number(lat).toFixed(6)}<br>
-      Lng: ${Number(lng).toFixed(6)}<br><br>
-      <button style="background:#ff1493;color:#fff;border:none;padding:8px;border-radius:8px;width:100%;"
-        onclick="confirmD4DLead(${lat}, ${lng})">
-        Add this as Seller Lead
-      </button>
-      <button style="margin-top:6px;background:#ffb6c1;color:#000;border:none;padding:8px;border-radius:8px;width:100%;"
-        onclick="cancelD4DLead()">
-        Cancel
-      </button>
-    </div>
-  `;
+const address = await getAddressFromLatLng(lat, lng);
+
+const html = `
+  <div style="min-width:240px;">
+    <strong>D4D Lead?</strong><br><br>
+
+    <div style="font-size:12px;">
+      <strong>Address:</strong><br>
+      ${address}
+    </div><br>
+
+    <button style="background:#ff1493;color:#fff;border:none;padding:8px;border-radius:8px;width:100%;"
+      onclick="confirmD4DLead(${lat}, ${lng})">
+      Add this as Seller Lead
+    </button>
+
+    <button style="margin-top:6px;background:#ff69b4;color:#000;border:none;padding:8px;border-radius:8px;width:100%;"
+      onclick="openStreetView(${lat}, ${lng})">
+      Street View
+    </button>
+
+    <button style="margin-top:6px;background:#ffb6c1;color:#000;border:none;padding:8px;border-radius:8px;width:100%;"
+      onclick="cancelD4DLead()">
+      Cancel
+    </button>
+  </div>
+`;
+
 
   d4dTempMarker.bindPopup(html).openPopup();
 }
