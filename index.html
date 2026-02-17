@@ -1456,7 +1456,10 @@ function initMap() {
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors"
-  }).addTo(map);
+  }).addTo(map);   // ✅ Click map -> open D4D chooser popup (does NOT jump to Sellers page)
+  map.on("click", function(e) {
+    openD4DChooser(e.latlng.lat, e.latlng.lng);
+  });
 
   // ✅ DealMachine-style: click map → auto-fill seller form
 map.on("click", function(e) {
@@ -1510,12 +1513,24 @@ function refreshMapPins() {
 }
 
 function openStreetView(lat, lng) {
-  const url = `https://www.google.com/maps?q=&layer=c&cbll=${lat},${lng}`;
+  const url = `https://www.google.com/maps?q=${lat},${lng}&layer=c&cbll=${lat},${lng}`;
   window.open(url, "_blank");
 }
+
 /* ===== STEP 1: ADDRESS LOOKUP (PASTE HERE) ===== */
 async function getAddressFromLatLng(lat, lng) {
+  try {   
+// ✅ Reverse geocode: lat/lng -> address (shows in D4D popup)
+async function getAddressFromLatLng(lat, lng) {
   try {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return (data && (data.display_name || data.name)) ? (data.display_name || data.name) : "";
+  } catch (e) {
+    return "";
+  }
+}
     const res = await fetch(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
     );
@@ -1530,13 +1545,70 @@ async function getAddressFromLatLng(lat, lng) {
 
 let d4dTempMarker = null;
 
+async function// ✅ D4D popup that shows address + lets you choose Street View OR Add Seller
 async function openD4DChooser(lat, lng) {
-  if (d4dTempMarker) {
-    try { map.removeLayer(d4dTempMarker); } catch(e) {}
-    d4dTempMarker = null;
-  }
+  const prettyLat = Number(lat).toFixed(6);
+  const prettyLng = Number(lng).toFixed(6);
 
-  d4dTempMarker = L.marker([lat, lng]).addTo(map);
+  // show loading first
+  const loadingHtml = `
+    <div style="min-width:240px;">
+      <strong>D4D Lead</strong><br>
+      <div style="margin-top:6px;">Finding address...</div>
+      <div style="margin-top:6px;font-size:12px;">Lat: ${prettyLat}<br>Lng: ${prettyLng}</div>
+      <div style="margin-top:10px;">
+        <button style="background:#ffb6c1;color:#000;border:none;padding:8px;border-radius:8px;width:100%;"
+          onclick="cancelD4DLead()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  `;
+
+  // open popup at click location
+  if (window._d4dPopup) { try { map.closePopup(window._d4dPopup); } catch(e){} }
+  window._d4dPopup = L.popup().setLatLng([lat, lng]).setContent(loadingHtml).openOn(map);
+
+  // fetch address
+  const address = await getAddressFromLatLng(lat, lng);
+  const addressLine = address ? address : "(No address found — zoom in closer and click again)";
+
+  const html = `
+    <div style="min-width:240px;">
+      <strong>D4D Lead</strong><br>
+
+      <div style="margin-top:6px;">
+        <div style="font-size:12px;color:#555;">Address</div>
+        <div style="font-weight:bold;">${addressLine.replace(/</g, "&lt;")}</div>
+      </div>
+
+      <div style="margin-top:6px;font-size:12px;color:#555;">
+        Lat: ${prettyLat}<br>
+        Lng: ${prettyLng}
+      </div>
+
+      <div style="margin-top:10px;">
+        <button class="streetview-btn" style="width:100%;" onclick="openStreetView(${lat}, ${lng})">
+          Street View
+        </button>
+
+        <button style="margin-top:6px;background:#ff1493;color:#fff;border:none;padding:8px;border-radius:8px;width:100%;"
+          onclick="confirmD4DLead(${lat}, ${lng})">
+          Add this as Seller Lead
+        </button>
+
+        <button style="margin-top:6px;background:#ffb6c1;color:#000;border:none;padding:8px;border-radius:8px;width:100%;"
+          onclick="cancelD4DLead()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  `;
+
+  // update popup with address + buttons
+  window._d4dPopup.setContent(html);
+}
+ = L.marker([lat, lng]).addTo(map);
 
 const address = await getAddressFromLatLng(lat, lng);
 
