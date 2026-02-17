@@ -1459,9 +1459,9 @@ function initMap() {
   }).addTo(map);
 
   // ✅ DealMachine-style: click map → auto-fill seller form
-  map.on("click", function (e) {
-    startD4DFromMapClick(e.latlng.lat, e.latlng.lng);
-  });
+map.on("click", function(e) {
+  openD4DChooser(e.latlng.lat, e.latlng.lng);
+});
 }
 function refreshMapPins() {
   buyerMarkers.forEach(m => map.removeLayer(m));
@@ -1513,6 +1513,53 @@ function openStreetView(lat, lng) {
   const url = `https://www.google.com/maps?q=&layer=c&cbll=${lat},${lng}`;
   window.open(url, "_blank");
 }
+/* ===== STEP B STARTS HERE ===== */
+
+let d4dTempMarker = null;
+
+function openD4DChooser(lat, lng) {
+  if (d4dTempMarker) {
+    try { map.removeLayer(d4dTempMarker); } catch(e) {}
+    d4dTempMarker = null;
+  }
+
+  d4dTempMarker = L.marker([lat, lng]).addTo(map);
+
+  const html = `
+    <div style="min-width:200px;">
+      <strong>D4D Lead?</strong><br>
+      Lat: ${Number(lat).toFixed(6)}<br>
+      Lng: ${Number(lng).toFixed(6)}<br><br>
+      <button style="background:#ff1493;color:#fff;border:none;padding:8px;border-radius:8px;width:100%;"
+        onclick="confirmD4DLead(${lat}, ${lng})">
+        Add this as Seller Lead
+      </button>
+      <button style="margin-top:6px;background:#ffb6c1;color:#000;border:none;padding:8px;border-radius:8px;width:100%;"
+        onclick="cancelD4DLead()">
+        Cancel
+      </button>
+    </div>
+  `;
+
+  d4dTempMarker.bindPopup(html).openPopup();
+}
+
+function confirmD4DLead(lat, lng) {
+  if (d4dTempMarker) {
+    try { map.removeLayer(d4dTempMarker); } catch(e) {}
+    d4dTempMarker = null;
+  }
+  startD4DFromMapClick(lat, lng);
+}
+
+function cancelD4DLead() {
+  if (d4dTempMarker) {
+    try { map.removeLayer(d4dTempMarker); } catch(e) {}
+    d4dTempMarker = null;
+  }
+}
+
+/* ===== STEP B ENDS HERE ===== */
 function startD4DFromMapClick(lat, lng) {
   // Go to Sellers page
   showSection("sellers");
