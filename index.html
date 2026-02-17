@@ -1458,14 +1458,9 @@ function initMap() {
     attribution: "© OpenStreetMap contributors"
   }).addTo(map);
 
-  // ✅ SAFE TEST: confirm map click works (does NOT touch Firebase)
+  // ✅ DealMachine-style: click map → auto-fill seller form
   map.on("click", function (e) {
-    alert(
-      "Map click detected!\n\nLat: " +
-      e.latlng.lat.toFixed(6) +
-      "\nLng: " +
-      e.latlng.lng.toFixed(6)
-    );
+    startD4DFromMapClick(e.latlng.lat, e.latlng.lng);
   });
 }
 function refreshMapPins() {
@@ -1518,8 +1513,28 @@ function openStreetView(lat, lng) {
   const url = `https://www.google.com/maps?q=&layer=c&cbll=${lat},${lng}`;
   window.open(url, "_blank");
 }
+function startD4DFromMapClick(lat, lng) {
+  // Go to Sellers page
+  showSection("sellers");
 
-// ---------------- CALCULATORS ----------------
+  // Auto-fill seller fields
+  sellerSource.value = "Driving for Dollars";
+  sellerStatus.value = "New";
+  sellerMotivation.value = "Motivated";
+
+  sellerLat.value = Number(lat).toFixed(6);
+  sellerLng.value = Number(lng).toFixed(6);
+
+  if (!sellerType.value) sellerType.value = "Single Family";
+  if (!sellerState.value) sellerState.value = "FL";
+
+  const note = `D4D Map Click @ ${new Date().toLocaleString()} | ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  if (!sellerNotes.value.includes("D4D Map Click")) {
+    sellerNotes.value = (sellerNotes.value ? sellerNotes.value + "\n" : "") + note;
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}// ---------------- CALCULATORS ----------------
 function calculateOffer() {
   const arv = parseFloat(calcARV.value) || 0;
   const repairs = parseFloat(calcRepairs.value) || 0;
