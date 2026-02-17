@@ -1453,11 +1453,21 @@ let sellerMarkers = [];
 
 function initMap() {
   map = L.map("mapContainer").setView([37.0902, -95.7129], 4);
+
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors"
   }).addTo(map);
-}
 
+  // ✅ SAFE TEST: confirm map click works (does NOT touch Firebase)
+  map.on("click", function (e) {
+    alert(
+      "Map click detected!\n\nLat: " +
+      e.latlng.lat.toFixed(6) +
+      "\nLng: " +
+      e.latlng.lng.toFixed(6)
+    );
+  });
+}
 function refreshMapPins() {
   buyerMarkers.forEach(m => map.removeLayer(m));
   sellerMarkers.forEach(m => map.removeLayer(m));
