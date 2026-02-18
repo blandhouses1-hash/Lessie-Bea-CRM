@@ -1517,12 +1517,20 @@ function openStreetView(lat, lng) {
   window.open(url, "_blank");
 }
 
-/* ===== STEP 1: ADDRESS LOOKUP (PASTE HERE) ===== */
-async function getAddressFromLatLng(lat, lng) {
-  try {   
+/* ===== STEP 1: ADDRESS LOOKUP ===== */
 // ✅ Reverse geocode: lat/lng -> address (shows in D4D popup)
 async function getAddressFromLatLng(lat, lng) {
   try {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return (data && (data.display_name || data.name)) 
+      ? (data.display_name || data.name) 
+      : "";
+  } catch (e) {
+    return "";
+  }
+}
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
     const res = await fetch(url);
     const data = await res.json();
