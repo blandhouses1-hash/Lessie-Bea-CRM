@@ -1624,54 +1624,6 @@ async function openD4DChooser(lat, lng) {
   // update popup with address + buttons
   window._d4dPopup.setContent(html);
 }
- = L.marker([lat, lng]).addTo(map);
-
-const address = await getAddressFromLatLng(lat, lng);
-
-const html = `
-  <div style="min-width:240px;">
-    <strong>D4D Lead?</strong><br><br>
-
-    <div style="font-size:12px;">
-      <strong>Address:</strong><br>
-      ${address}
-    </div><br>
-
-    <button style="background:#ff1493;color:#fff;border:none;padding:8px;border-radius:8px;width:100%;"
-      onclick="confirmD4DLead(${lat}, ${lng})">
-      Add this as Seller Lead
-    </button>
-
-    <button style="margin-top:6px;background:#ff69b4;color:#000;border:none;padding:8px;border-radius:8px;width:100%;"
-      onclick="openStreetView(${lat}, ${lng})">
-      Street View
-    </button>
-
-    <button style="margin-top:6px;background:#ffb6c1;color:#000;border:none;padding:8px;border-radius:8px;width:100%;"
-      onclick="cancelD4DLead()">
-      Cancel
-    </button>
-  </div>
-`;
-
-
-  d4dTempMarker.bindPopup(html).openPopup();
-}
-
-function confirmD4DLead(lat, lng) {
-  if (d4dTempMarker) {
-    try { map.removeLayer(d4dTempMarker); } catch(e) {}
-    d4dTempMarker = null;
-  }
-  startD4DFromMapClick(lat, lng);
-}
-
-function cancelD4DLead() {
-  if (d4dTempMarker) {
-    try { map.removeLayer(d4dTempMarker); } catch(e) {}
-    d4dTempMarker = null;
-  }
-}
 
 /* ===== STEP B ENDS HERE ===== */
 function startD4DFromMapClick(lat, lng) {
