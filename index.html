@@ -1461,10 +1461,6 @@ function initMap() {
     openD4DChooser(e.latlng.lat, e.latlng.lng);
   });
 
-  // ✅ DealMachine-style: click map → auto-fill seller form
-map.on("click", function(e) {
-  openD4DChooser(e.latlng.lat, e.latlng.lng);
-});
 }
 function refreshMapPins() {
   buyerMarkers.forEach(m => map.removeLayer(m));
@@ -1553,7 +1549,6 @@ async function getAddressFromLatLng(lat, lng) {
 
 let d4dTempMarker = null;
 
-async function// ✅ D4D popup that shows address + lets you choose Street View OR Add Seller
 async function openD4DChooser(lat, lng) {
   const prettyLat = Number(lat).toFixed(6);
   const prettyLng = Number(lng).toFixed(6);
