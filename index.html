@@ -1512,40 +1512,53 @@ function openStreetView(lat, lng) {
   const url = `https://www.google.com/maps?q=${lat},${lng}&layer=c&cbll=${lat},${lng}`;
   window.open(url, "_blank");
 }
-
 /* ===== STEP 1: ADDRESS LOOKUP ===== */
-// ✅ Reverse geocode: lat/lng -> address (shows in D4D popup)
 async function getAddressFromLatLng(lat, lng) {
   try {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    return (data && (data.display_name || data.name)) 
-      ? (data.display_name || data.name) 
-      : "";
-  } catch (e) {
-    return "";
-  }
-}
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    return (data && (data.display_name || data.name)) ? (data.display_name || data.name) : "";
-  } catch (e) {
-    return "";
-  }
-}
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`
     );
     const data = await res.json();
-    return data.display_name || "Address not found";
+    return data.display_name || "";
   } catch (e) {
-    return "Address lookup failed";
+    return "";
   }
 }
 /* ===== END STEP 1 ===== */
+
 /* ===== STEP B STARTS HERE ===== */
+let d4dTempMarker = null;
+
+async function openD4DChooser(lat, lng) {
+  const address = await getAddressFromLatLng(lat, lng);
+
+  if (window._d4dPopup) {
+    try { map.closePopup(window._d4dPopup); } catch(e){}
+  }
+
+  window._d4dPopup = L.popup()
+    .setLatLng([lat, lng])
+    .setContent(`
+      <div style="min-width:240px;">
+        <strong>D4D Lead</strong><br><br>
+        ${address || "Address not found"}<br><br>
+        <button onclick="confirmD4DLead(${lat}, ${lng})">Add this as Seller Lead</button>
+        <button onclick="cancelD4DLead()">Cancel</button>
+      </div>
+    `)
+    .openOn(map);
+}
+
+function confirmD4DLead(lat, lng) {
+  startD4DFromMapClick(lat, lng);
+}
+
+function cancelD4DLead() {
+  if (window._d4dPopup) {
+    try { map.closePopup(window._d4dPopup); } catch(e){}
+  }
+}
+/* ===== STEP B ENDS HERE ===== */
 
 let d4dTempMarker = null;
 
