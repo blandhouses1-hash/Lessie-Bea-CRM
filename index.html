@@ -25,35 +25,13 @@
     States: <span id="stateCount">0</span>
   </div>
 
-  <div id="buyerLocationDetails"
-       style="display:none;margin-top:10px;
-              background:#fff;padding:10px;
-              border-radius:8px;border:1px solid #ffb6c1">
-  </div>
-<div class="card">
-  <h2>📍 Buyers by Location (click to view)</h2>
-
-  <div style="cursor:pointer;color:#e91e63;font-weight:bold"
-       onclick="toggleBuyerLocation('cities')">
-    Cities: <span id="cityCount">0</span>
-  </div>
-
-  <div style="cursor:pointer;color:#e91e63;font-weight:bold"
-       onclick="toggleBuyerLocation('counties')">
-    Counties: <span id="countyCount">0</span>
-  </div>
-
-  <div style="cursor:pointer;color:#e91e63;font-weight:bold"
-       onclick="toggleBuyerLocation('states')">
-    States: <span id="stateCount">0</span>
-  </div>
 
   <div id="buyerLocationDetails"
        style="display:none;margin-top:10px;
               background:#fff;padding:10px;
               border-radius:8px;border:1px solid #ffb6c1">
   </div>
-</div></div><div class="card"><h2>📊 KPI Tracker</h2><div class="flex"><div><h3>📞 Calls</h3><p>Calls Today: <strong id="callsToday">0</strong></p><p>Calls This Week: <strong id="callsWeek">0</strong></p><p>Calls This Month: <strong id="callsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('calls')">+ Log Call</button><button class="secondary" onclick="removeKPI('calls')">- Remove Call</button></div></div><div><h3>📩 Texts</h3><p>Texts Today: <strong id="textsToday">0</strong></p><p>Texts This Week: <strong id="textsWeek">0</strong></p><p>Texts This Month: <strong id="textsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('texts')">+ Log Text</button><button class="secondary" onclick="removeKPI('texts')">- Remove Text</button></div></div><div><h3>📧 Emails</h3><p>Emails Today: <strong id="emailsToday">0</strong></p><p>Emails This Week: <strong id="emailsWeek">0</strong></p><p>Emails This Month: <strong id="emailsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('emails')">+ Log Email</button><button class="secondary" onclick="removeKPI('emails')">- Remove Email</button></div></div></div><div class="flex"><div><h3>🏠 Sellers</h3><p>Sellers Today: <strong id="sellersToday">0</strong></p><p>Sellers This Week: <strong id="sellersWeek">0</strong></p><p>Sellers This Month: <strong id="sellersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('sellers')">+ Log Seller</button><button class="secondary" onclick="removeKPI('sellers')">- Remove Seller</button></div></div><div><h3>👥 Buyers</h3><p>Buyers Today: <strong id="buyersToday">0</strong></p><p>Buyers This Week: <strong id="buyersWeek">0</strong></p><p>Buyers This Month: <strong id="buyersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('buyers')">+ Log Buyer</button><button class="secondary" onclick="removeKPI('buyers')">- Remove Buyer</button></div></div><div><h3>🧑‍💼 Agents</h3><p>Agents Today: <strong id="agentsToday">0</strong></p><p>Agents This Week: <strong id="agentsWeek">0</strong></p><p>Agents This Month: <strong id="agentsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('agents')">+ Log Agent</button><button class="secondary" onclick="removeKPI('agents')">- Remove Agent</button></div></div><div><h3>📬 Direct Mail</h3><p>Mail Today: <strong id="directMailToday">0</strong></p><p>Mail This Week: <strong id="directMailWeek">0</strong></p><p>Mail This Month: <strong id="directMailMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('directMail')">+ Log Mail Sent</button><button class="secondary" onclick="removeKPI('directMail')">- Remove Mail</button></div></div></div></div></div>
+<div class="flex"><div><h3>📞 Calls</h3><p>Calls Today: <strong id="callsToday">0</strong></p><p>Calls This Week: <strong id="callsWeek">0</strong></p><p>Calls This Month: <strong id="callsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('calls')">+ Log Call</button><button class="secondary" onclick="removeKPI('calls')">- Remove Call</button></div></div><div><h3>📩 Texts</h3><p>Texts Today: <strong id="textsToday">0</strong></p><p>Texts This Week: <strong id="textsWeek">0</strong></p><p>Texts This Month: <strong id="textsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('texts')">+ Log Text</button><button class="secondary" onclick="removeKPI('texts')">- Remove Text</button></div></div><div><h3>📧 Emails</h3><p>Emails Today: <strong id="emailsToday">0</strong></p><p>Emails This Week: <strong id="emailsWeek">0</strong></p><p>Emails This Month: <strong id="emailsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('emails')">+ Log Email</button><button class="secondary" onclick="removeKPI('emails')">- Remove Email</button></div></div></div><div class="flex"><div><h3>🏠 Sellers</h3><p>Sellers Today: <strong id="sellersToday">0</strong></p><p>Sellers This Week: <strong id="sellersWeek">0</strong></p><p>Sellers This Month: <strong id="sellersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('sellers')">+ Log Seller</button><button class="secondary" onclick="removeKPI('sellers')">- Remove Seller</button></div></div><div><h3>👥 Buyers</h3><p>Buyers Today: <strong id="buyersToday">0</strong></p><p>Buyers This Week: <strong id="buyersWeek">0</strong></p><p>Buyers This Month: <strong id="buyersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('buyers')">+ Log Buyer</button><button class="secondary" onclick="removeKPI('buyers')">- Remove Buyer</button></div></div><div><h3>🧑‍💼 Agents</h3><p>Agents Today: <strong id="agentsToday">0</strong></p><p>Agents This Week: <strong id="agentsWeek">0</strong></p><p>Agents This Month: <strong id="agentsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('agents')">+ Log Agent</button><button class="secondary" onclick="removeKPI('agents')">- Remove Agent</button></div></div><div><h3>📬 Direct Mail</h3><p>Mail Today: <strong id="directMailToday">0</strong></p><p>Mail This Week: <strong id="directMailWeek">0</strong></p><p>Mail This Month: <strong id="directMailMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('directMail')">+ Log Mail Sent</button><button class="secondary" onclick="removeKPI('directMail')">- Remove Mail</button></div></div></div></div></div>
 
 <!-- ✅ NEW: DAILY SCHEDULE PAGE (NO OTHER CHANGES) -->
 <div class="section" id="dailySchedule">
@@ -2268,39 +2246,10 @@ function updateDashboard() {
   totalSellers.innerText = sellers.length;
   totalTitleCompanies.innerText = titleCompanies.length;
   totalMatches.innerText = savedSearches.length;
-  totalProfit.innerText = "$" + portfolio.reduce((sum, p) => sum + (parseFloat(p.profit) || 0), 0).toFixed(2);
+  totalProfit.innerText =
+    "$" + portfolio.reduce((sum, p) => sum + (parseFloat(p.profit) || 0), 0).toFixed(2);
   totalDFD.innerText = sellers.filter(s => s.source === "Driving for Dollars").length;
-
-  // #5 FIX + county count added to Buyers by Location
-  const byCityState = {};
-  const byCounty = {};
-
-  buyers.forEach(b => {
-    const key = `${b.city}, ${b.state}`;
-    byCityState[key] = (byCityState[key] || 0) + 1;
-
-    const countyName = (b.county || "").trim();
-    const countyKey = countyName ? `${countyName} County, ${b.state}` : "";
-    if (countyKey) byCounty[countyKey] = (byCounty[countyKey] || 0) + 1;
-  });
-
-  let output = "";
-  Object.keys(byCityState).sort().forEach(loc => {
-    output += `${loc}: ${byCityState[loc]} buyers\n`;
-  });
-
-  output += `\n--- County Counts ---\n`;
-  if (Object.keys(byCounty).length === 0) {
-    output += "No county data yet.\n";
-  } else {
-    Object.keys(byCounty).sort().forEach(c => {
-      output += `${c}: ${byCounty[c]} buyers\n`;
-    });
-  }
-
-  buyersByLocation.textContent = output || "No buyers yet.";
 }
-
 // ---------------- INIT APP ----------------
 function initApp() {
   populateStates();
