@@ -2239,9 +2239,29 @@ function skipTrace(phone, email, name) {
   window.open(`https://www.truepeoplesearch.com/results?name=${encodeURIComponent(query)}`, "_blank");
   window.open(`https://www.fastpeoplesearch.com/name/${encodeURIComponent(query)}`, "_blank");
 }
+function toggleBuyerLocation(type) {
+  const box = document.getElementById("buyerLocationDetails");
+  if (!box) return;
 
+  // click same again = close
+  if (box.style.display === "block" && box.dataset.type === type) {
+    box.style.display = "none";
+    box.dataset.type = "";
+    return;
+  }
+
+  let html = "";
+  if (type === "cities") html = window._buyerCitiesHTML || "No city data yet.";
+  if (type === "counties") html = window._buyerCountiesHTML || "No county data yet.";
+  if (type === "states") html = window._buyerStatesHTML || "No state data yet.";
+
+  box.innerHTML = html;
+  box.dataset.type = type;
+  box.style.display = "block";
+}
 // ---------------- DASHBOARD UPDATE ----------------
 function updateDashboard() {
+  // totals (keep these)
   totalBuyers.innerText = buyers.length;
   totalSellers.innerText = sellers.length;
   totalTitleCompanies.innerText = titleCompanies.length;
@@ -2249,6 +2269,64 @@ function updateDashboard() {
   totalProfit.innerText =
     "$" + portfolio.reduce((sum, p) => sum + (parseFloat(p.profit) || 0), 0).toFixed(2);
   totalDFD.innerText = sellers.filter(s => s.source === "Driving for Dollars").length;
+
+  // 📍 Buyers by Location counts + lists
+  const cityMap = {};
+  const countyMap = {};
+  const stateMap = {};
+
+  (buyers || []).forEach(b => {
+    const city = (b.city || "").trim();
+    const county = (b.county || "").trim();
+    const state = (b.state || "").trim();
+
+    if (city && state) {
+      const ck = `${city}, ${state}`;
+      cityMap[ck] = (cityMap[ck] || 0) + 1;
+    }
+
+    if (county && state) {
+      const kk = `${county} County, ${state}`;
+      countyMap[kk] = (countyMap[kk] || 0) + 1;
+    }
+
+    if (state) {
+      stateMap[state] = (stateMap[state] || 0) + 1;
+    }
+  });
+
+  // IMPORTANT: only update if the elements exist (prevents errors)
+  const cityEl = document.getElementById("cityCount");
+  const countyEl = document.getElementById("countyCount");
+  const stateEl = document.getElementById("stateCount");
+
+  if (cityEl) cityEl.innerText = Object.keys(cityMap).length;
+  if (countyEl) countyEl.innerText = Object.keys(countyMap).length;
+  if (stateEl) stateEl.innerText = Object.keys(stateMap).length;
+
+  window._buyerCitiesHTML =
+    "<strong>Cities</strong><br>" +
+    Object.keys(cityMap)
+      .sort()
+      .map(k => `• ${k} (${cityMap[k]})`)
+      .join("<br>");
+
+  window._buyerCountiesHTML =
+    "<strong>Counties</strong><br>" +
+    Object.keys(countyMap)
+      .sort()
+      .map(k => `• ${k} (${countyMap[k]})`)
+      .join("<br>");
+
+  window._buyerStatesHTML =
+    "<strong>States</strong><br>" +
+    Object.keys(stateMap)
+      .sort()
+      .map(k => `• ${k} (${stateMap[k]} buyers)`)
+      .join("<br>");
+
+  // ✅ keep your pipeline/county output section OFF (you removed it already)
+  // ✅ nothing else needs to be added here
 }
 // ---------------- INIT APP ----------------
 function initApp() {
