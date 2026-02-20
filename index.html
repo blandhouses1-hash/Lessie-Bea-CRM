@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Lessie Bea CRM 🐝</title><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+,<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Lessie Bea CRM 🐝</title><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/><style>body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #ffd1dc, #ffffff); color: #000; margin: 0; padding: 0; } h1, h2, h3 { color: #e91e63; } .container { max-width: 1400px; margin: auto; padding: 20px; } .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; } .nav button { background: #ff69b4; border: none; color: #000; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; } .nav button.active { background: #ff1493; color: #fff; } .section { display: none; } .section.active { display: block; } .card { background: #fff0f5; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ffb6c1; } input, select, textarea, button { padding: 8px; margin: 5px 0; border-radius: 6px; border: 1px solid #ffb6c1; width: 100%; } button { background: #ff69b4; color: #000; font-weight: bold; cursor: pointer; } button.secondary { background: #ffb6c1; } button.danger { background: #e91e63; color: #fff; } table { width: 100%; border-collapse: collapse; margin-top: 10px; } th, td { border: 1px solid #ffb6c1; padding: 6px; font-size: 14px; } th { background: #ffe4e1; } .map-container { height: 400px; border-radius: 10px; overflow: hidden; } .badge { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; } .badge.new { background: #ffb6c1; } .badge.uc { background: #ffc0cb; } .badge.closed { background: #ff69b4; color: #fff; } .login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; } .login-box { background: #fff0f5; padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; border: 1px solid #ffb6c1; } .hidden { display: none; } .flex { display: flex; gap: 10px; flex-wrap: wrap; } .flex > div { flex: 1 1 200px; } .contract-box { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 10px; white-space: pre-wrap; color: #000; border: 1px solid #ffb6c1; } .contract-actions { margin-bottom: 10px; } .pipeline { display: flex; gap: 10px; overflow-x: auto; } .pipeline-column { background: #fff0f5; border-radius: 10px; padding: 10px; min-width: 220px; border: 1px solid #ffb6c1; } .pipeline-column h3 { text-align: center; } .pipeline-card { background: #ffe4e1; border-radius: 8px; padding: 8px; margin-bottom: 8px; font-size: 13px; } .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 999; } .modal-content { background: #fff0f5; padding: 20px; border-radius: 10px; max-width: 700px; width: 100%; border: 1px solid #ffb6c1; } .kpi-buttons button { margin-top: 5px; } .kpi-buttons { display:flex; gap:6px; flex-wrap:wrap; } .image-preview { max-width: 120px; max-height: 120px; border-radius: 8px; border: 1px solid #ffb6c1; display:block; margin-top:6px;} .streetview-btn { background:#ff1493; color:#fff; margin-top:5px; } .match-results { background:#fff; border:1px solid #ffb6c1; border-radius:8px; padding:10px; margin-top:10px; } #buyersByLocation { font-size: 18px; } .hot-btn { background:#ff1493; color:#fff; } .saved-search { border:1px solid #ffb6c1; padding:8px; border-radius:6px; margin-bottom:8px; background:#fff; }</style></head><body><div class="login-screen" id="loginScreen"><div class="login-box"><h2>Login</h2><input id="loginUser" placeholder="Username" type="text"/><input id="loginPass" placeholder="Password" type="password"/><button onclick="login()">Login</button><p id="loginError" style="color:#e91e63;"></p></div></div><div class="hidden" id="app"><div class="container"><h1>Lessie Bea CRM 🐝</h1><div class="nav"><button class="active" onclick="showSection('dashboard')">Dashboard</button>
@@ -2243,52 +2243,60 @@ function updateDashboard() {
   totalSellers.innerText = sellers.length;
   totalTitleCompanies.innerText = titleCompanies.length;
   totalMatches.innerText = savedSearches.length;
-  totalProfit.innerText = "$" + portfolio.reduce((sum, p) => sum + (parseFloat(p.profit) || 0), 0).toFixed(2);
+  totalProfit.innerText =
+    "$" + portfolio.reduce((sum, p) => sum + (parseFloat(p.profit) || 0), 0).toFixed(2);
   totalDFD.innerText = sellers.filter(s => s.source === "Driving for Dollars").length;
 
-// 📍 Buyers by Location – clean summary + click to view
-const cityMap = {};
-const countyMap = {};
-const stateMap = {};
+  // 📍 Buyers by Location – clean summary + click to view
+  const cityMap = {};
+  const countyMap = {};
+  const stateMap = {};
 
-buyers.forEach(b => {
-  if (b.city && b.state) {
-    const cityKey = `${b.city}, ${b.state}`;
-    cityMap[cityKey] = (cityMap[cityKey] || 0) + 1;
-  }
+  buyers.forEach(b => {
+    if (b.city && b.state) {
+      const cityKey = `${b.city}, ${b.state}`;
+      cityMap[cityKey] = (cityMap[cityKey] || 0) + 1;
+    }
 
-  if (b.county && b.state) {
-    const countyKey = `${b.county} County, ${b.state}`;
-    countyMap[countyKey] = (countyMap[countyKey] || 0) + 1;
-  }
+    if (b.county && b.state) {
+      const countyKey = `${b.county} County, ${b.state}`;
+      countyMap[countyKey] = (countyMap[countyKey] || 0) + 1;
+    }
 
-  if (b.state) {
-    stateMap[b.state] = (stateMap[b.state] || 0) + 1;
-  }
-});
+    if (b.state) {
+      stateMap[b.state] = (stateMap[b.state] || 0) + 1;
+    }
+  });
 
-document.getElementById("cityCount").innerText = Object.keys(cityMap).length;
-document.getElementById("countyCount").innerText = Object.keys(countyMap).length;
-document.getElementById("stateCount").innerText = Object.keys(stateMap).length;
+  const cityCountEl = document.getElementById("cityCount");
+  const countyCountEl = document.getElementById("countyCount");
+  const stateCountEl = document.getElementById("stateCount");
 
-window._buyerCitiesHTML =
-  "<strong>Cities</strong><br>" +
-  Object.entries(cityMap).map(([k,v]) => `• ${k} (${v})`).join("<br>");
+  if (cityCountEl) cityCountEl.innerText = Object.keys(cityMap).length;
+  if (countyCountEl) countyCountEl.innerText = Object.keys(countyMap).length;
+  if (stateCountEl) stateCountEl.innerText = Object.keys(stateMap).length;
 
-window._buyerCountiesHTML =
-  "<strong>Counties</strong><br>" +
-  Object.entries(countyMap).map(([k,v]) => `• ${k} (${v})`).join("<br>");
+  window._buyerCitiesHTML =
+    "<strong>Cities</strong><br>" +
+    Object.entries(cityMap)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([k, v]) => `• ${k} (${v})`)
+      .join("<br>");
 
-window._buyerStatesHTML =
-  "<strong>States</strong><br>" +
-  Object.entries(stateMap).map(([k,v]) => `• ${k} (${v} buyers)`).join("<br>");
+  window._buyerCountiesHTML =
+    "<strong>Counties</strong><br>" +
+    Object.entries(countyMap)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([k, v]) => `• ${k} (${v})`)
+      .join("<br>");
 
-    });
-  }
-
-  buyersByLocation.textContent = output || "No buyers yet.";
+  window._buyerStatesHTML =
+    "<strong>States</strong><br>" +
+    Object.entries(stateMap)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([k, v]) => `• ${k} (${v} buyers)`)
+      .join("<br>");
 }
-
 // ---------------- INIT APP ----------------
 function initApp() {
   populateStates();
