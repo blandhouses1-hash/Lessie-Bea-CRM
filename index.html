@@ -7,31 +7,7 @@
 <button onclick="showSection('dailySchedule')">Daily Schedule</button>
 <!-- ✅ /NEW -->
 
-<button onclick="showSection('buyers')">Buyers</button><button onclick="showSection('sellers')">Sellers / Deals</button><button onclick="showSection('pipeline')">Deal Pipeline</button><button onclick="showSection('portfolio')">Portfolio</button><button onclick="showSection('titleCompanies')">Title Companies</button><button onclick="showSection('map')">Buyer &amp; Seller Map</button><button onclick="showSection('decisionTool')">Decision Tool</button><button onclick="showSection('calculators')">Calculators</button><button onclick="showSection('followups')">Follow-Ups</button><button onclick="showSection('templates')">SMS &amp; Email Templates</button><button onclick="showSection('marketing')">Marketing Tools</button><button onclick="showSection('contracts')">Contracts &amp; Deal Packet</button><button onclick="showSection('importExport')">Import / Export</button></div><div class="section active" id="dashboard"><div class="card"><h2>Dashboard</h2><div class="flex"><div>Total Buyers: <strong id="totalBuyers">0</strong></div><div>Total Sellers / Deals: <strong id="totalSellers">0</strong></div><div>Total Title Companies: <strong id="totalTitleCompanies">0</strong></div><div>Total Matches: <strong id="totalMatches">0</strong></div><div>Total Profit: <strong id="totalProfit">$0</strong></div><div>Driving for Dollars Leads: <strong id="totalDFD">0</strong></div></div></div><div class="card">
-  <h2>📍 Buyers by Location (click to view)</h2>
-
-  <div style="cursor:pointer;color:#e91e63;font-weight:bold"
-       onclick="toggleBuyerLocation('cities')">
-    Cities: <span id="cityCount">0</span>
-  </div>
-
-  <div style="cursor:pointer;color:#e91e63;font-weight:bold"
-       onclick="toggleBuyerLocation('counties')">
-    Counties: <span id="countyCount">0</span>
-  </div>
-
-  <div style="cursor:pointer;color:#e91e63;font-weight:bold"
-       onclick="toggleBuyerLocation('states')">
-    States: <span id="stateCount">0</span>
-  </div>
-
-
-  <div id="buyerLocationDetails"
-       style="display:none;margin-top:10px;
-              background:#fff;padding:10px;
-              border-radius:8px;border:1px solid #ffb6c1">
-  </div>
-<div class="flex"><div><h3>📞 Calls</h3><p>Calls Today: <strong id="callsToday">0</strong></p><p>Calls This Week: <strong id="callsWeek">0</strong></p><p>Calls This Month: <strong id="callsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('calls')">+ Log Call</button><button class="secondary" onclick="removeKPI('calls')">- Remove Call</button></div></div><div><h3>📩 Texts</h3><p>Texts Today: <strong id="textsToday">0</strong></p><p>Texts This Week: <strong id="textsWeek">0</strong></p><p>Texts This Month: <strong id="textsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('texts')">+ Log Text</button><button class="secondary" onclick="removeKPI('texts')">- Remove Text</button></div></div><div><h3>📧 Emails</h3><p>Emails Today: <strong id="emailsToday">0</strong></p><p>Emails This Week: <strong id="emailsWeek">0</strong></p><p>Emails This Month: <strong id="emailsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('emails')">+ Log Email</button><button class="secondary" onclick="removeKPI('emails')">- Remove Email</button></div></div></div><div class="flex"><div><h3>🏠 Sellers</h3><p>Sellers Today: <strong id="sellersToday">0</strong></p><p>Sellers This Week: <strong id="sellersWeek">0</strong></p><p>Sellers This Month: <strong id="sellersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('sellers')">+ Log Seller</button><button class="secondary" onclick="removeKPI('sellers')">- Remove Seller</button></div></div><div><h3>👥 Buyers</h3><p>Buyers Today: <strong id="buyersToday">0</strong></p><p>Buyers This Week: <strong id="buyersWeek">0</strong></p><p>Buyers This Month: <strong id="buyersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('buyers')">+ Log Buyer</button><button class="secondary" onclick="removeKPI('buyers')">- Remove Buyer</button></div></div><div><h3>🧑‍💼 Agents</h3><p>Agents Today: <strong id="agentsToday">0</strong></p><p>Agents This Week: <strong id="agentsWeek">0</strong></p><p>Agents This Month: <strong id="agentsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('agents')">+ Log Agent</button><button class="secondary" onclick="removeKPI('agents')">- Remove Agent</button></div></div><div><h3>📬 Direct Mail</h3><p>Mail Today: <strong id="directMailToday">0</strong></p><p>Mail This Week: <strong id="directMailWeek">0</strong></p><p>Mail This Month: <strong id="directMailMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('directMail')">+ Log Mail Sent</button><button class="secondary" onclick="removeKPI('directMail')">- Remove Mail</button></div></div></div></div></div>
+<button onclick="showSection('buyers')">Buyers</button><button onclick="showSection('sellers')">Sellers / Deals</button><button onclick="showSection('pipeline')">Deal Pipeline</button><button onclick="showSection('portfolio')">Portfolio</button><button onclick="showSection('titleCompanies')">Title Companies</button><button onclick="showSection('map')">Buyer &amp; Seller Map</button><button onclick="showSection('decisionTool')">Decision Tool</button><button onclick="showSection('calculators')">Calculators</button><button onclick="showSection('followups')">Follow-Ups</button><button onclick="showSection('templates')">SMS &amp; Email Templates</button><button onclick="showSection('marketing')">Marketing Tools</button><button onclick="showSection('contracts')">Contracts &amp; Deal Packet</button><button onclick="showSection('importExport')">Import / Export</button></div><div class="section active" id="dashboard"><div class="card"><h2>Dashboard</h2><div class="flex"><div>Total Buyers: <strong id="totalBuyers">0</strong></div><div>Total Sellers / Deals: <strong id="totalSellers">0</strong></div><div>Total Title Companies: <strong id="totalTitleCompanies">0</strong></div><div>Total Matches: <strong id="totalMatches">0</strong></div><div>Total Profit: <strong id="totalProfit">$0</strong></div><div>Driving for Dollars Leads: <strong id="totalDFD">0</strong></div></div></div><div class="card"><h2>📍 Buyers by Location</h2><pre id="buyersByLocation"></pre></div><div class="card"><h2>📊 KPI Tracker</h2><div class="flex"><div><h3>📞 Calls</h3><p>Calls Today: <strong id="callsToday">0</strong></p><p>Calls This Week: <strong id="callsWeek">0</strong></p><p>Calls This Month: <strong id="callsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('calls')">+ Log Call</button><button class="secondary" onclick="removeKPI('calls')">- Remove Call</button></div></div><div><h3>📩 Texts</h3><p>Texts Today: <strong id="textsToday">0</strong></p><p>Texts This Week: <strong id="textsWeek">0</strong></p><p>Texts This Month: <strong id="textsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('texts')">+ Log Text</button><button class="secondary" onclick="removeKPI('texts')">- Remove Text</button></div></div><div><h3>📧 Emails</h3><p>Emails Today: <strong id="emailsToday">0</strong></p><p>Emails This Week: <strong id="emailsWeek">0</strong></p><p>Emails This Month: <strong id="emailsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('emails')">+ Log Email</button><button class="secondary" onclick="removeKPI('emails')">- Remove Email</button></div></div></div><div class="flex"><div><h3>🏠 Sellers</h3><p>Sellers Today: <strong id="sellersToday">0</strong></p><p>Sellers This Week: <strong id="sellersWeek">0</strong></p><p>Sellers This Month: <strong id="sellersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('sellers')">+ Log Seller</button><button class="secondary" onclick="removeKPI('sellers')">- Remove Seller</button></div></div><div><h3>👥 Buyers</h3><p>Buyers Today: <strong id="buyersToday">0</strong></p><p>Buyers This Week: <strong id="buyersWeek">0</strong></p><p>Buyers This Month: <strong id="buyersMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('buyers')">+ Log Buyer</button><button class="secondary" onclick="removeKPI('buyers')">- Remove Buyer</button></div></div><div><h3>🧑‍💼 Agents</h3><p>Agents Today: <strong id="agentsToday">0</strong></p><p>Agents This Week: <strong id="agentsWeek">0</strong></p><p>Agents This Month: <strong id="agentsMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('agents')">+ Log Agent</button><button class="secondary" onclick="removeKPI('agents')">- Remove Agent</button></div></div><div><h3>📬 Direct Mail</h3><p>Mail Today: <strong id="directMailToday">0</strong></p><p>Mail This Week: <strong id="directMailWeek">0</strong></p><p>Mail This Month: <strong id="directMailMonth">0</strong></p><div class="kpi-buttons"><button onclick="logKPI('directMail')">+ Log Mail Sent</button><button class="secondary" onclick="removeKPI('directMail')">- Remove Mail</button></div></div></div></div></div>
 
 <!-- ✅ NEW: DAILY SCHEDULE PAGE (NO OTHER CHANGES) -->
 <div class="section" id="dailySchedule">
@@ -200,32 +176,8 @@
   </div>
 </div>
 <!-- ===================== /DECISION TOOL ===================== -->
-<!-- ===================== DAILY MOTIVATION ===================== -->
-<div id="motivation" class="section hidden">
-  <h2>Daily Motivation</h2>
 
-  <div class="card">
-    <h3>Psalm 23</h3>
-    <p style="line-height:1.6; font-style:italic;">
-      The Lord is my shepherd; I shall not want.<br>
-      He maketh me to lie down in green pastures:<br>
-      he leadeth me beside the still waters.<br><br>
-
-      He restoreth my soul:<br>
-      he leadeth me in the paths of righteousness<br>
-      for his name’s sake.<br><br>
-
-      Yea, though I walk through the valley of the shadow of death,<br>
-      I will fear no evil: for thou art with me;<br>
-      thy rod and thy staff they comfort me.<br><br>
-
-      Surely goodness and mercy shall follow me all the days of my life:<br>
-      and I will dwell in the house of the Lord for ever.
-    </p>
-    <p class="muted">— Psalm 23 (KJV)</p>
-  </div>
-</div>
-<!-- ===================== /DAILY MOTIVATION ===================== --><div class="section" id="calculators"><div class="card"><h2>Offer Calculator (70% Rule + Repairs)</h2><div class="flex"><div><input id="calcARV" placeholder="ARV" type="number"/></div><div><input id="calcRepairs" placeholder="Repairs" type="number"/></div><div><input id="calcClosingCosts" placeholder="Estimated Closing Costs" type="number"/></div></div><button onclick="calculateOffer()">Calculate Offer</button><p>Your Max Allowable Offer: <strong id="calcResult">$0</strong></p></div><div class="card"><h2>Assignment Fee / JV Calculator</h2><div class="flex"><div><input id="assignContractPrice" placeholder="Contract Price" type="number"/></div><div><input id="assignEndBuyerPrice" placeholder="End Buyer Price" type="number"/></div><div><input id="assignJVPercent" placeholder="JV Split %" type="number"/></div></div><button onclick="calculateAssignment()">Calculate</button><p>Assignment Fee: <strong id="assignFee">$0</strong></p><p>Your JV Share: <strong id="assignJVShare">$0</strong></p></div><div class="card"><h2>IRS Set-Aside Calculator (Per Deal Profit)</h2><div class="flex"><div><input id="irsProfit" placeholder="Deal Profit" type="number"/></div><div><input id="irsRate" placeholder="Tax % to set aside (example: 25)" type="number"/></div></div><button onclick="calculateIRSSetAside()">Calculate IRS Set-Aside</button><p>Estimated IRS Set-Aside: <strong id="irsResult">$0</strong></p></div></div><div class="section" id="followups"><div class="card"><h2>Follow-Up Reminders &amp; Tasks</h2><table id="followupsTable"><thead><tr><th>Name</th><th>Type</th><th>Phone</th><th>Email</th><th>Follow-Up Date</th><th>Task</th><th>Notes</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="templates"><div class="card"><h2>SMS &amp; Email Templates</h2><div class="flex"><div><h3>Add Template</h3><input id="templateName" placeholder="Template Name"/><select id="templateType"><option value="sms">SMS</option><option value="email">Email</option></select><textarea id="templateBody" placeholder="Template Message"></textarea><button onclick="addTemplate()">Save Template</button></div><div><h3>Saved Templates</h3><table id="templatesTable"><thead><tr><th>Name</th><th>Type</th><th>Preview</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div></div></div><div class="section" id="marketing"><div class="card"><h2>Marketing Tools</h2><h3>📬 Postcard Generator</h3><input accept="image/*" id="postcardImage" onchange="previewMarketingImage('postcardImage','postcardPreview')" type="file"/><img class="image-preview" id="postcardPreview"/><button class="secondary" onclick="deleteMarketingImage('postcardImage','postcardPreview')">Delete Image</button><textarea id="postcardMessage" placeholder="Enter postcard message"></textarea><button onclick="generatePostcard()">Generate Postcard</button><button class="secondary" onclick="downloadMarketingDoc('postcardOutput','Postcard.html','postcardPreview')">Download Postcard</button><button class="danger" onclick="clearOutput('postcardOutput')">Delete Message</button><pre id="postcardOutput"></pre><h3>📧 Buyer Packet Email Generator</h3><input accept="image/*" id="packetImage" onchange="previewMarketingImage('packetImage','packetPreview')" type="file"/><img class="image-preview" id="packetPreview"/><button class="secondary" onclick="deleteMarketingImage('packetImage','packetPreview')">Delete Image</button><input id="packetAddress" placeholder="Property Address"/><input id="packetPrice" placeholder="Price" type="number"/><input id="packetARV" placeholder="ARV" type="number"/><textarea id="packetNotes" placeholder="Deal Notes"></textarea><button onclick="generateBuyerPacket()">Generate Buyer Packet</button><button class="secondary" onclick="downloadMarketingDoc('packetOutput','Buyer_Packet.html','packetPreview')">Download Buyer Packet</button><button class="danger" onclick="clearOutput('packetOutput')">Delete Message</button><pre id="packetOutput"></pre><h3>📄 Deal Flyer Generator</h3><input accept="image/*" id="flyerImage" onchange="previewMarketingImage('flyerImage','flyerPreview')" type="file"/><img class="image-preview" id="flyerPreview"/><button class="secondary" onclick="deleteMarketingImage('flyerImage','flyerPreview')">Delete Image</button><input id="flyerAddress" placeholder="Property Address"/><input id="flyerPrice" placeholder="Price" type="number"/><input id="flyerARV" placeholder="ARV" type="number"/><textarea id="flyerNotes" placeholder="Deal Notes"></textarea><button onclick="generateFlyer()">Generate Flyer</button><button class="secondary" onclick="downloadText('flyerOutput','Deal_Flyer.txt')">Download Flyer</button><button class="danger" onclick="clearOutput('flyerOutput')">Delete Message</button><pre id="flyerOutput"></pre><h3>🏗 Permit Lead Entry (Manual)</h3><input id="permitOwner" placeholder="Owner Name"/><input id="permitAddress" placeholder="Property Address"/><input id="permitType" placeholder="Permit Type"/><input id="permitValue" placeholder="Permit Value"/><input id="permitPulledBy" placeholder="Pulled By (Your Name)"/><input id="permitDate" type="date"/><textarea id="permitNotes" placeholder="Notes"></textarea><button onclick="addPermitLead()">Add Permit Lead</button><h3>Permit Leads List</h3><table id="permitTable"><thead><tr><th>Owner</th><th>Address</th><th>Type</th><th>Value</th><th>Pulled By</th><th>Date</th><th>Notes</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="contracts"><div class="card"><h2>Contracts &amp; Deal Packet</h2><div class="flex"><div><h3>Select Seller</h3><select id="contractSellerSelect"></select></div><div><h3>Select Buyer (Assignment)</h3><select id="contractBuyerSelect"></select></div></div><div class="contract-actions"><button onclick="openHelloSign()">Send with HelloSign</button><button onclick="downloadContract('contractVacantLand','Vacant_Land_Contract.txt')">Download Vacant Land Contract</button><button onclick="downloadContract('contractResidential','Residential_Contract.txt')">Download Residential Contract</button><button onclick="downloadContract('contractAssignment','Assignment_Contract.txt')">Download Assignment Contract</button><button onclick="downloadContract('contractClosingSheet','Closing_Sheet.txt')">Download Closing Sheet</button></div><div class="contract-box" id="contractVacantLand"></div><div class="contract-box" id="contractResidential"></div><div class="contract-box" id="contractAssignment"></div><div class="contract-box" id="contractClosingSheet"></div></div><div class="card"><h2>My Uploads (Contracts &amp; Closing Detail Sheet)</h2><input accept=".txt,.text,.md,.html" id="myDocFile" type="file"/><select id="myDocCategory"><option value="Contract">Contract</option><option value="Closing Detail Sheet">Closing Detail Sheet</option></select><button onclick="uploadMyDoc()">Upload</button><table id="myDocsTable"><thead><tr><th>Name</th><th>Category</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="importExport"><div class="card"><h2>Import Leads (CSV from PropWire, Zillow, Courthouse, etc.)</h2><input accept=".csv" id="csvFileInput" type="file"/><select id="importType"><option value="buyers">Import as Buyers</option><option value="sellers">Import as Sellers</option></select><button onclick="importCSV()">Upload CSV</button><p>CSV should include headers like: name, email, phone, type, city, state, address, zip, price, lot_size, zoning, utilities</p></div><div class="card"><h2>Export Data</h2><button onclick="exportBuyers()">Export Buyers CSV</button><button onclick="exportSellers()">Export Sellers CSV</button><button onclick="exportTitleCompanies()">Export Title Companies CSV</button></div></div></div></div><div class="modal" id="followUpModal"><div class="modal-content"><h3>Follow-Up Reminder</h3><p id="followUpMessage"></p><button onclick="closeFollowUpModal()">Close</button></div></div><div class="modal" id="docEditModal"><div class="modal-content"><h3>Edit Uploaded Document</h3><p><strong id="docEditTitle"></strong></p><textarea id="docEditBody" style="min-height:280px;"></textarea><div class="flex"><div><button onclick="saveDocEdit()">Save</button></div><div><button class="secondary" onclick="closeDocEditModal()">Cancel</button></div></div></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+<div class="section" id="calculators"><div class="card"><h2>Offer Calculator (70% Rule + Repairs)</h2><div class="flex"><div><input id="calcARV" placeholder="ARV" type="number"/></div><div><input id="calcRepairs" placeholder="Repairs" type="number"/></div><div><input id="calcClosingCosts" placeholder="Estimated Closing Costs" type="number"/></div></div><button onclick="calculateOffer()">Calculate Offer</button><p>Your Max Allowable Offer: <strong id="calcResult">$0</strong></p></div><div class="card"><h2>Assignment Fee / JV Calculator</h2><div class="flex"><div><input id="assignContractPrice" placeholder="Contract Price" type="number"/></div><div><input id="assignEndBuyerPrice" placeholder="End Buyer Price" type="number"/></div><div><input id="assignJVPercent" placeholder="JV Split %" type="number"/></div></div><button onclick="calculateAssignment()">Calculate</button><p>Assignment Fee: <strong id="assignFee">$0</strong></p><p>Your JV Share: <strong id="assignJVShare">$0</strong></p></div><div class="card"><h2>IRS Set-Aside Calculator (Per Deal Profit)</h2><div class="flex"><div><input id="irsProfit" placeholder="Deal Profit" type="number"/></div><div><input id="irsRate" placeholder="Tax % to set aside (example: 25)" type="number"/></div></div><button onclick="calculateIRSSetAside()">Calculate IRS Set-Aside</button><p>Estimated IRS Set-Aside: <strong id="irsResult">$0</strong></p></div></div><div class="section" id="followups"><div class="card"><h2>Follow-Up Reminders &amp; Tasks</h2><table id="followupsTable"><thead><tr><th>Name</th><th>Type</th><th>Phone</th><th>Email</th><th>Follow-Up Date</th><th>Task</th><th>Notes</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="templates"><div class="card"><h2>SMS &amp; Email Templates</h2><div class="flex"><div><h3>Add Template</h3><input id="templateName" placeholder="Template Name"/><select id="templateType"><option value="sms">SMS</option><option value="email">Email</option></select><textarea id="templateBody" placeholder="Template Message"></textarea><button onclick="addTemplate()">Save Template</button></div><div><h3>Saved Templates</h3><table id="templatesTable"><thead><tr><th>Name</th><th>Type</th><th>Preview</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div></div></div><div class="section" id="marketing"><div class="card"><h2>Marketing Tools</h2><h3>📬 Postcard Generator</h3><input accept="image/*" id="postcardImage" onchange="previewMarketingImage('postcardImage','postcardPreview')" type="file"/><img class="image-preview" id="postcardPreview"/><button class="secondary" onclick="deleteMarketingImage('postcardImage','postcardPreview')">Delete Image</button><textarea id="postcardMessage" placeholder="Enter postcard message"></textarea><button onclick="generatePostcard()">Generate Postcard</button><button class="secondary" onclick="downloadMarketingDoc('postcardOutput','Postcard.html','postcardPreview')">Download Postcard</button><button class="danger" onclick="clearOutput('postcardOutput')">Delete Message</button><pre id="postcardOutput"></pre><h3>📧 Buyer Packet Email Generator</h3><input accept="image/*" id="packetImage" onchange="previewMarketingImage('packetImage','packetPreview')" type="file"/><img class="image-preview" id="packetPreview"/><button class="secondary" onclick="deleteMarketingImage('packetImage','packetPreview')">Delete Image</button><input id="packetAddress" placeholder="Property Address"/><input id="packetPrice" placeholder="Price" type="number"/><input id="packetARV" placeholder="ARV" type="number"/><textarea id="packetNotes" placeholder="Deal Notes"></textarea><button onclick="generateBuyerPacket()">Generate Buyer Packet</button><button class="secondary" onclick="downloadMarketingDoc('packetOutput','Buyer_Packet.html','packetPreview')">Download Buyer Packet</button><button class="danger" onclick="clearOutput('packetOutput')">Delete Message</button><pre id="packetOutput"></pre><h3>📄 Deal Flyer Generator</h3><input accept="image/*" id="flyerImage" onchange="previewMarketingImage('flyerImage','flyerPreview')" type="file"/><img class="image-preview" id="flyerPreview"/><button class="secondary" onclick="deleteMarketingImage('flyerImage','flyerPreview')">Delete Image</button><input id="flyerAddress" placeholder="Property Address"/><input id="flyerPrice" placeholder="Price" type="number"/><input id="flyerARV" placeholder="ARV" type="number"/><textarea id="flyerNotes" placeholder="Deal Notes"></textarea><button onclick="generateFlyer()">Generate Flyer</button><button class="secondary" onclick="downloadText('flyerOutput','Deal_Flyer.txt')">Download Flyer</button><button class="danger" onclick="clearOutput('flyerOutput')">Delete Message</button><pre id="flyerOutput"></pre><h3>🏗 Permit Lead Entry (Manual)</h3><input id="permitOwner" placeholder="Owner Name"/><input id="permitAddress" placeholder="Property Address"/><input id="permitType" placeholder="Permit Type"/><input id="permitValue" placeholder="Permit Value"/><input id="permitPulledBy" placeholder="Pulled By (Your Name)"/><input id="permitDate" type="date"/><textarea id="permitNotes" placeholder="Notes"></textarea><button onclick="addPermitLead()">Add Permit Lead</button><h3>Permit Leads List</h3><table id="permitTable"><thead><tr><th>Owner</th><th>Address</th><th>Type</th><th>Value</th><th>Pulled By</th><th>Date</th><th>Notes</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="contracts"><div class="card"><h2>Contracts &amp; Deal Packet</h2><div class="flex"><div><h3>Select Seller</h3><select id="contractSellerSelect"></select></div><div><h3>Select Buyer (Assignment)</h3><select id="contractBuyerSelect"></select></div></div><div class="contract-actions"><button onclick="openHelloSign()">Send with HelloSign</button><button onclick="downloadContract('contractVacantLand','Vacant_Land_Contract.txt')">Download Vacant Land Contract</button><button onclick="downloadContract('contractResidential','Residential_Contract.txt')">Download Residential Contract</button><button onclick="downloadContract('contractAssignment','Assignment_Contract.txt')">Download Assignment Contract</button><button onclick="downloadContract('contractClosingSheet','Closing_Sheet.txt')">Download Closing Sheet</button></div><div class="contract-box" id="contractVacantLand"></div><div class="contract-box" id="contractResidential"></div><div class="contract-box" id="contractAssignment"></div><div class="contract-box" id="contractClosingSheet"></div></div><div class="card"><h2>My Uploads (Contracts &amp; Closing Detail Sheet)</h2><input accept=".txt,.text,.md,.html" id="myDocFile" type="file"/><select id="myDocCategory"><option value="Contract">Contract</option><option value="Closing Detail Sheet">Closing Detail Sheet</option></select><button onclick="uploadMyDoc()">Upload</button><table id="myDocsTable"><thead><tr><th>Name</th><th>Category</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div class="section" id="importExport"><div class="card"><h2>Import Leads (CSV from PropWire, Zillow, Courthouse, etc.)</h2><input accept=".csv" id="csvFileInput" type="file"/><select id="importType"><option value="buyers">Import as Buyers</option><option value="sellers">Import as Sellers</option></select><button onclick="importCSV()">Upload CSV</button><p>CSV should include headers like: name, email, phone, type, city, state, address, zip, price, lot_size, zoning, utilities</p></div><div class="card"><h2>Export Data</h2><button onclick="exportBuyers()">Export Buyers CSV</button><button onclick="exportSellers()">Export Sellers CSV</button><button onclick="exportTitleCompanies()">Export Title Companies CSV</button></div></div></div></div><div class="modal" id="followUpModal"><div class="modal-content"><h3>Follow-Up Reminder</h3><p id="followUpMessage"></p><button onclick="closeFollowUpModal()">Close</button></div></div><div class="modal" id="docEditModal"><div class="modal-content"><h3>Edit Uploaded Document</h3><p><strong id="docEditTitle"></strong></p><textarea id="docEditBody" style="min-height:280px;"></textarea><div class="flex"><div><button onclick="saveDocEdit()">Save</button></div><div><button class="secondary" onclick="closeDocEditModal()">Cancel</button></div></div></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 // ---------------- FIREBASE LOGIN + AUTO SYNC (KEEPS YOUR CURRENT LAYOUT) ----------------
 // Syncs your ENTIRE CRM across devices using Firebase Auth + Firestore.
 // Images are NOT synced (keeps it free + prevents crashing).
@@ -2263,95 +2215,46 @@ function skipTrace(phone, email, name) {
   window.open(`https://www.truepeoplesearch.com/results?name=${encodeURIComponent(query)}`, "_blank");
   window.open(`https://www.fastpeoplesearch.com/name/${encodeURIComponent(query)}`, "_blank");
 }
-function toggleBuyerLocation(type) {
-  const box = document.getElementById("buyerLocationDetails");
-  if (!box) return;
 
-  // click same again = close
-  if (box.style.display === "block" && box.dataset.type === type) {
-    box.style.display = "none";
-    box.dataset.type = "";
-    return;
-  }
-
-  let html = "";
-  if (type === "cities") html = window._buyerCitiesHTML || "No city data yet.";
-  if (type === "counties") html = window._buyerCountiesHTML || "No county data yet.";
-  if (type === "states") html = window._buyerStatesHTML || "No state data yet.";
-
-  box.innerHTML = html;
-  box.dataset.type = type;
-  box.style.display = "block";
-}
 // ---------------- DASHBOARD UPDATE ----------------
 function updateDashboard() {
-  // totals (keep these)
   totalBuyers.innerText = buyers.length;
   totalSellers.innerText = sellers.length;
   totalTitleCompanies.innerText = titleCompanies.length;
   totalMatches.innerText = savedSearches.length;
-  totalProfit.innerText =
-    "$" + portfolio.reduce((sum, p) => sum + (parseFloat(p.profit) || 0), 0).toFixed(2);
+  totalProfit.innerText = "$" + portfolio.reduce((sum, p) => sum + (parseFloat(p.profit) || 0), 0).toFixed(2);
   totalDFD.innerText = sellers.filter(s => s.source === "Driving for Dollars").length;
 
-  // 📍 Buyers by Location counts + lists
-  const cityMap = {};
-  const countyMap = {};
-  const stateMap = {};
+  // #5 FIX + county count added to Buyers by Location
+  const byCityState = {};
+  const byCounty = {};
 
-  (buyers || []).forEach(b => {
-    const city = (b.city || "").trim();
-    const county = (b.county || "").trim();
-    const state = (b.state || "").trim();
+  buyers.forEach(b => {
+    const key = `${b.city}, ${b.state}`;
+    byCityState[key] = (byCityState[key] || 0) + 1;
 
-    if (city && state) {
-      const ck = `${city}, ${state}`;
-      cityMap[ck] = (cityMap[ck] || 0) + 1;
-    }
-
-    if (county && state) {
-      const kk = `${county} County, ${state}`;
-      countyMap[kk] = (countyMap[kk] || 0) + 1;
-    }
-
-    if (state) {
-      stateMap[state] = (stateMap[state] || 0) + 1;
-    }
+    const countyName = (b.county || "").trim();
+    const countyKey = countyName ? `${countyName} County, ${b.state}` : "";
+    if (countyKey) byCounty[countyKey] = (byCounty[countyKey] || 0) + 1;
   });
 
-  // IMPORTANT: only update if the elements exist (prevents errors)
-  const cityEl = document.getElementById("cityCount");
-  const countyEl = document.getElementById("countyCount");
-  const stateEl = document.getElementById("stateCount");
+  let output = "";
+  Object.keys(byCityState).sort().forEach(loc => {
+    output += `${loc}: ${byCityState[loc]} buyers\n`;
+  });
 
-  if (cityEl) cityEl.innerText = Object.keys(cityMap).length;
-  if (countyEl) countyEl.innerText = Object.keys(countyMap).length;
-  if (stateEl) stateEl.innerText = Object.keys(stateMap).length;
+  output += `\n--- County Counts ---\n`;
+  if (Object.keys(byCounty).length === 0) {
+    output += "No county data yet.\n";
+  } else {
+    Object.keys(byCounty).sort().forEach(c => {
+      output += `${c}: ${byCounty[c]} buyers\n`;
+    });
+  }
 
-  window._buyerCitiesHTML =
-    "<strong>Cities</strong><br>" +
-    Object.keys(cityMap)
-      .sort()
-      .map(k => `• ${k} (${cityMap[k]})`)
-      .join("<br>");
-
-  window._buyerCountiesHTML =
-    "<strong>Counties</strong><br>" +
-    Object.keys(countyMap)
-      .sort()
-      .map(k => `• ${k} (${countyMap[k]})`)
-      .join("<br>");
-
-  window._buyerStatesHTML =
-    "<strong>States</strong><br>" +
-    Object.keys(stateMap)
-      .sort()
-      .map(k => `• ${k} (${stateMap[k]} buyers)`)
-      .join("<br>");
-
-  // ✅ keep your pipeline/county output section OFF (you removed it already)
-  // ✅ nothing else needs to be added here
+  buyersByLocation.textContent = output || "No buyers yet.";
 }
+
 // ---------------- INIT APP ----------------
 function initApp() {
   populateStates();
