@@ -476,10 +476,16 @@ function showSection(id) {
       btn.classList.add("active");
     }
   });
-  if (id === "map") {
-    setTimeout(() => { map.invalidateSize(); refreshMapPins(); }, 300);
-  }
-  if (id === "pipeline") {
+if (id === "map") {
+  setTimeout(() => {
+    if (!mapInitialized) {
+      initMap();
+      mapInitialized = true;
+    }
+    map.invalidateSize();
+    refreshMapPins();
+  }, 300);
+}  if (id === "pipeline") {
     renderPipeline();
   }
   if (id === "portfolio") {
@@ -1466,11 +1472,11 @@ function deleteTitleCompany(index) {
     updateDashboard();
   }
 }
-
 // ---------------- MAP ----------------
 let map;
 let buyerMarkers = [];
 let sellerMarkers = [];
+let mapInitialized = false;   // ✅ ADD THIS LINE
 
 function initMap() {
   map = L.map("mapContainer").setView([37.0902, -95.7129], 4);
@@ -2350,10 +2356,7 @@ function initApp() {
   renderMyDocs();
   updateDashboard();
   updateKPIDashboard();
-  initMap();
-  refreshMapPins();
 }
-
 // ---------------- CONTRACT TEXT (UNCHANGED – WHOLESALE FRIENDLY) ----------------
 const VACANT_LAND_CONTRACT = `
 [Vacant Land Purchase & Sale Agreement
